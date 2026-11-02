@@ -17,7 +17,7 @@ data class QuestionOption(
 @Serializable
 data class Question (
     val textContent: String = "",
-    val imagePath: String = "",
+    val imagePath: String? = null,
     val options: List<QuestionOption>,
 )
 
