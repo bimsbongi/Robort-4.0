@@ -1,0 +1,314 @@
+{
+  "title": "Ist das Kunst oder kann das weg?",
+  "emoji": ":art:",
+  "accentColor": 16777215,
+
+  "description": "Wähle aus, ob dies echte Werke der Kunst sind oder einfach weg können.\n\nDie Antworten anderer User auf diesem Sever stehen auch zur Verfügung, damit du weißt wer endlich mal die Wahrheit hören muss.",
+
+  "questions": [
+    {
+      "id" : 0,
+      "textContent" : "Leonardo da Vinci\n _Mona Lisa_, 1506\n\nGemälde",
+      "imagePath" : "Quiz/Art/monaLisa.webp",
+      "options" : [
+        {
+          "name" : "Kunst!",
+          "emoji" : "\uD83C\uDFA8",
+          "weight" : 1
+        },
+        {
+          "name" : "Kann weg",
+          "emoji" : "\uD83D\uDDD1\uFE0F",
+          "weight" : 0
+        }
+      ]
+    },
+    {
+      "id" : 1,
+      "textContent" : "Team Cherry\n _Hollow Knight_, 2017\n\nVideospiel",
+      "imagePath" : "Quiz/Art/hollowKnight.webp",
+      "options" : [
+        {
+          "name" : "Kunst!",
+          "emoji" : "\uD83C\uDFA8",
+          "weight" : 1
+        },
+        {
+          "name" : "Kann weg",
+          "emoji" : "\uD83D\uDDD1\uFE0F",
+          "weight" : 0
+        }
+      ]
+    },
+    {
+      "id" : 2,
+      "textContent" : "Ludwig van Beethoven\n _Symphony No. 9_, 1824\n\nSymphonie\n\nhttps://www.youtube.com/watch?v=gT91esZK90I",
+      "options" : [
+        {
+          "name" : "Kunst!",
+          "emoji" : "\uD83C\uDFA8",
+          "weight" : 1
+        },
+        {
+          "name" : "Kann weg",
+          "emoji" : "\uD83D\uDDD1\uFE0F",
+          "weight" : 0
+        }
+      ]
+    },
+    {
+      "id" : 3,
+      "textContent" : "Fritz Leonhardt\n _Fernsehturm Stuttgart_, 1956\n\nGebäude",
+      "imagePath" : "Quiz/Art/fernsehturm.jpg",
+      "options" : [
+        {
+          "name" : "Kunst!",
+          "emoji" : "\uD83C\uDFA8",
+          "weight" : 1
+        },
+        {
+          "name" : "Kann weg",
+          "emoji" : "\uD83D\uDDD1\uFE0F",
+          "weight" : 0
+        }
+      ]
+    },
+    {
+      "id" : 4,
+      "textContent" : "Tobias\n _Haus_, 2026\n\nDigitale Skulptur",
+      "imagePath" : "Quiz/Art/dirtHut.png",
+      "options" : [
+        {
+          "name" : "Kunst!",
+          "emoji" : "\uD83C\uDFA8",
+          "weight" : 1
+        },
+        {
+          "name" : "Kann weg",
+          "emoji" : "\uD83D\uDDD1\uFE0F",
+          "weight" : 0
+        }
+      ]
+    },
+    {
+      "id" : 5,
+      "textContent" : "Galileel\n _Der 1&1 Willkommens-Song_, 2017\n\nYouTube Kacke\n\nhttps://www.youtube.com/watch?v=D9LxMut3TMM",
+      "imagePath" : "Quiz/Art/MarcelDavis.png",
+      "options" : [
+        {
+          "name" : "Kunst!",
+          "emoji" : "\uD83C\uDFA8",
+          "weight" : 1
+        },
+        {
+          "name" : "Kann weg",
+          "emoji" : "\uD83D\uDDD1\uFE0F",
+          "weight" : 0
+        }
+      ]
+    },
+    {
+      "id" : 6,
+      "textContent" : "Maurizio Cattelan\n _Comedian_, 2019\n\nSkulptur",
+      "imagePath" : "Quiz/Art/banana.jpg",
+      "options" : [
+        {
+          "name" : "Kunst!",
+          "emoji" : "\uD83C\uDFA8",
+          "weight" : 1
+        },
+        {
+          "name" : "Kann weg",
+          "emoji" : "\uD83D\uDDD1\uFE0F",
+          "weight" : 0
+        }
+      ]
+    },
+    {
+      "id" : 7,
+      "textContent" : "Tobias\n _Burg_, 2013\n\nGemälde",
+      "imagePath" : "Quiz/Art/burg.png",
+      "options" : [
+        {
+          "name" : "Kunst!",
+          "emoji" : "\uD83C\uDFA8",
+          "weight" : 1
+        },
+        {
+          "name" : "Kann weg",
+          "emoji" : "\uD83D\uDDD1\uFE0F",
+          "weight" : 0
+        }
+      ]
+    },
+    {
+      "id" : 8,
+      "textContent" : "Die Natur\n _Unbekannt_, 2022\n\nSkulptur\n\nhttps://events.gea.de/event-portal_artikel,-kaputtes-opern-dach-wird-im-see-eingeweiht-_arid,6592894.html",
+      "imagePath" : "Quiz/Art/opernDach.jpeg",
+      "options" : [
+        {
+          "name" : "Kunst!",
+          "emoji" : "\uD83C\uDFA8",
+          "weight" : 1
+        },
+        {
+          "name" : "Kann weg",
+          "emoji" : "\uD83D\uDDD1\uFE0F",
+          "weight" : 0
+        }
+      ]
+    },
+    {
+      "id" : 9,
+      "textContent" : "Noxa\n _Tung Tung Tung Sahur_, 2025\n\nItalian Brainrot",
+      "imagePath" : "Quiz/Art/TungTungTungSahur.png",
+      "options" : [
+        {
+          "name" : "Kunst!",
+          "emoji" : "\uD83C\uDFA8",
+          "weight" : 1
+        },
+        {
+          "name" : "Kann weg",
+          "emoji" : "\uD83D\uDDD1\uFE0F",
+          "weight" : 0
+        }
+      ]
+    },
+    {
+      "id" : 10,
+      "textContent" : "rply\n _commatose_, 2024\n\nGeometry Dash Level\n\nhttps://www.youtube.com/watch?v=CC3gDTn-8_8",
+      "imagePath" : "Quiz/Art/commatose.png",
+      "options" : [
+        {
+          "name" : "Kunst!",
+          "emoji" : "\uD83C\uDFA8",
+          "weight" : 1
+        },
+        {
+          "name" : "Kann weg",
+          "emoji" : "\uD83D\uDDD1\uFE0F",
+          "weight" : 0
+        }
+      ]
+    },
+    {
+      "id" : 11,
+      "textContent" : "NGL Abi Jahrgang 2023\n _Abistreich_, 2023\n\nEventkunst",
+      "imagePath" : "Quiz/Art/Abistreich.jpg",
+      "options" : [
+        {
+          "name" : "Kunst!",
+          "emoji" : "\uD83C\uDFA8",
+          "weight" : 1
+        },
+        {
+          "name" : "Kann weg",
+          "emoji" : "\uD83D\uDDD1\uFE0F",
+          "weight" : 0
+        }
+      ]
+    },
+    {
+      "id" : 12,
+      "textContent" : "Tobias\n _#123456_, 2023\n\nDigitales Gemälde",
+      "imagePath" : "Quiz/Art/color.png",
+      "options" : [
+        {
+          "name" : "Kunst!",
+          "emoji" : "\uD83C\uDFA8",
+          "weight" : 1
+        },
+        {
+          "name" : "Kann weg",
+          "emoji" : "\uD83D\uDDD1\uFE0F",
+          "weight" : 0
+        }
+      ]
+    },
+    {
+      "id" : 13,
+      "textContent" : "Tobias\n _Robort_, 2021\n\nDiscord Bot",
+      "imagePath" : "Quiz/Art/robort.png",
+      "options" : [
+        {
+          "name" : "Kunst!",
+          "emoji" : "\uD83C\uDFA8",
+          "weight" : 1
+        },
+        {
+          "name" : "Kann weg",
+          "emoji" : "\uD83D\uDDD1\uFE0F",
+          "weight" : 0
+        }
+      ]
+    },
+    {
+      "id" : 14,
+      "textContent" : "Jonas\n _Pizzawärmer_, 2026\n\nSkulptur",
+      "imagePath" : "Quiz/Art/lampHeater.jpg",
+      "options" : [
+        {
+          "name" : "Kunst!",
+          "emoji" : "\uD83C\uDFA8",
+          "weight" : 1
+        },
+        {
+          "name" : "Kann weg",
+          "emoji" : "\uD83D\uDDD1\uFE0F",
+          "weight" : 0
+        }
+      ]
+    },
+    {
+      "id" : 15,
+      "textContent" : "Stefan Z.\n _Splinoraptor_, 2025\n\nDigitale Zeichnung",
+      "imagePath" : "Quiz/Art/splinoraptor.png",
+      "options" : [
+        {
+          "name" : "Kunst!",
+          "emoji" : "\uD83C\uDFA8",
+          "weight" : 1
+        },
+        {
+          "name" : "Kann weg",
+          "emoji" : "\uD83D\uDDD1\uFE0F",
+          "weight" : 0
+        }
+      ]
+    },
+    {
+      "id" : 16,
+      "textContent" : "Anonymer Pilz\n _Unbekannt_, 2025\n\nImprovisierte Musikaufführung\n\nhttps://www.youtube.com/watch?v=hgmi4wvODvo",
+      "options" : [
+        {
+          "name" : "Kunst!",
+          "emoji" : "\uD83C\uDFA8",
+          "weight" : 1
+        },
+        {
+          "name" : "Kann weg",
+          "emoji" : "\uD83D\uDDD1\uFE0F",
+          "weight" : 0
+        }
+      ]
+    },
+    {
+      "id" : 17,
+      "textContent" : "Felix\n _Unbekannt_, 2026\n\nSkulptur",
+      "imagePath" : "Quiz/Art/aufzug.png",
+      "options" : [
+        {
+          "name" : "Kunst!",
+          "emoji" : "\uD83C\uDFA8",
+          "weight" : 1
+        },
+        {
+          "name" : "Kann weg",
+          "emoji" : "\uD83D\uDDD1\uFE0F",
+          "weight" : 0
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,220 @@
+{
+  "title" : "Die Wichtigen Fragen des Lebens",
+  "emoji" : ":interrobang:",
+  "accentColor" : 14303056,
+
+  "description" : "Die Welt braucht deine Meinung zu diesen alles entscheidenden Fragen!\n\nDie Antworten anderer User auf diesem Sever stehen auch zur Verfügung, damit du weißt wer endlich mal die Wahrheit hören muss.",
+
+  "questions" : [
+    {
+      "id" : 0,
+      "textContent" : "Heißt es *die* Nutella?",
+      "options" : [
+        {
+          "name" : "Ja (die)",
+          "emoji" : "✅"
+        },
+        {
+          "name" : "Nein (das, der)",
+          "emoji" : "❌"
+        }
+      ]
+    },
+    {
+      "id" : 1,
+      "textContent" : "Ist Müsli eine Suppe?",
+      "options" : [
+        {
+          "name" : "Ja, Suppe",
+          "emoji" : "✅"
+        },
+        {
+          "name" : "Nein, keine Suppe",
+          "emoji" : "❌"
+        }
+      ]
+    },
+    {
+      "id" : 2,
+      "textContent" : "Gehört Ananas auf Pizza?",
+      "options" : [
+        {
+          "name" : "Ja",
+          "emoji" : "✅"
+        },
+        {
+          "name" : "Nein",
+          "emoji" : "❌"
+        }
+      ]
+    },
+    {
+      "id" : 3,
+      "textContent" : "Hat ein Strohhalm zwei Löcher?",
+      "options" : [
+        {
+          "name" : "Ja, zwei",
+          "emoji" : "✅"
+        },
+        {
+          "name" : "Nein, eins",
+          "emoji" : "❌"
+        }
+      ]
+    },
+    {
+      "id" : 4,
+      "textContent" : "Ist Salz ein Gewürz?",
+      "options" : [
+        {
+          "name" : "Ja, ein Gewürz",
+          "emoji" : "✅"
+        },
+        {
+          "name" : "Nein, kein Gewürz",
+          "emoji" : "❌"
+        }
+      ]
+    },
+    {
+      "id" : 5,
+      "textContent" : "Würde ein Hund eine Hose um alle vier Beine tragen?",
+      "options" : [
+        {
+          "name" : "Ja, um alle",
+          "emoji" : "✅"
+        },
+        {
+          "name" : "Nein, nur um die Hinterbeine",
+          "emoji" : "❌"
+        }
+      ]
+    },
+    {
+      "id" : 6,
+      "textContent" : "Ist abends duschen besser als morgens?",
+      "options" : [
+        {
+          "name" : "Ja, abends",
+          "emoji" : "✅"
+        },
+        {
+          "name" : "Nein, morgens",
+          "emoji" : "❌"
+        }
+      ]
+    },
+    {
+      "id" : 7,
+      "textContent" : "Sollte Toilettenpapier vorne abgewickelt werden?",
+      "options" : [
+        {
+          "name" : "Ja, vorne",
+          "emoji" : "✅"
+        },
+        {
+          "name" : "Nein, hinten",
+          "emoji" : "❌"
+        }
+      ]
+    },
+    {
+      "id" : 8,
+      "textContent" : "Ist Wasser nass?",
+      "options" : [
+        {
+          "name" : "Ja, nass",
+          "emoji" : "✅"
+        },
+        {
+          "name" : "Nein, nicht nass",
+          "emoji" : "❌"
+        }
+      ]
+    },
+    {
+      "id" : 9,
+      "textContent" : "Gewinnen eine Trilliarde Löwen gegen die Sonne?",
+      "options" : [
+        {
+          "name" : "Ja, die Löwen gewinnen",
+          "emoji" : "✅"
+        },
+        {
+          "name" : "Nein, die Sonne gewinnt",
+          "emoji" : "❌"
+        }
+      ]
+    },
+    {
+      "id" : 10,
+      "textContent" : "Ist das Kleid blau-schwarz? (nachschauen falls du es nicht kennst)",
+      "options" : [
+        {
+          "name" : "Ja, blau-schwarz",
+          "emoji" : "✅"
+        },
+        {
+          "name" : "Nein, weiß-gold",
+          "emoji" : "❌"
+        }
+      ]
+    },
+    {
+      "id" : 11,
+      "textContent" : "Kam das Huhn vor dem Ei?",
+      "options" : [
+        {
+          "name" : "Ja, Huhn zuerst",
+          "emoji" : "✅"
+        },
+        {
+          "name" : "Nein, Ei zuerst",
+          "emoji" : "❌"
+        }
+      ]
+    },
+    {
+      "id" : 12,
+      "textContent" : "Wird das Dateiformat GIF als \\\"jif\\\" ausgesprochen?",
+      "options" : [
+        {
+          "name" : "Ja, jif!",
+          "emoji" : "✅"
+        },
+        {
+          "name" : "Nein, GIF!",
+          "emoji" : "❌"
+        }
+      ]
+    },
+    {
+      "id" : 13,
+      "textContent" : "Ist Muttermilch vegan?",
+      "options" : [
+        {
+          "name" : "Ja, vegan!",
+          "emoji" : "✅"
+        },
+        {
+          "name" : "Nein, nicht vegan!",
+          "emoji" : "❌"
+        }
+      ]
+    },
+    {
+      "id" : 14,
+      "textContent" : "Sind Zahlen durchnummeriert?",
+      "options" : [
+        {
+          "name" : "Ja",
+          "emoji" : "✅"
+        },
+        {
+          "name" : "Nein",
+          "emoji" : "❌"
+        }
+      ]
+    }
+  ]
+}

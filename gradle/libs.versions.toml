@@ -1,0 +1,45 @@
+[versions]
+exposed = "1.6.0"
+jda = "6.7.0"
+jda-ktx = "0.15.0"
+jib = "3.5.4"
+kotlin = "2.4.21"
+ktor = "3.6.1"
+r2dbc-pool = "1.0.2.RELEASE"
+r2dbc-postgresql = "1.1.3.RELEASE"
+serialization-json = "1.12.0"
+logback = "1.5.6"
+
+[plugins]
+gradleversions = "nl.littlerobots.version-catalog-update:1.1.2"
+jib = { id = "com.google.cloud.tools.jib", version.ref = "jib" }
+kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
+kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
+
+[libraries]
+exposed-core = { module = "org.jetbrains.exposed:exposed-core", version.ref = "exposed" }
+exposed-json = { module = "org.jetbrains.exposed:exposed-json", version.ref = "exposed" }
+jda = { module = "net.dv8tion:JDA", version.ref = "jda" }
+jda-ktx = { module = "club.minnced:jda-ktx", version.ref = "jda-ktx" }
+kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "serialization-json" }
+ktor-client-cio = { module = "io.ktor:ktor-client-cio", version.ref = "ktor" }
+ktor-client-content-negotiation = { module = "io.ktor:ktor-client-content-negotiation", version.ref = "ktor" }
+ktor-client-core = { module = "io.ktor:ktor-client-core", version.ref = "ktor" }
+ktor-serialization-kotlinx-json = { module = "io.ktor:ktor-serialization-kotlinx-json", version.ref = "ktor" }
+r2dbc-pool = { module = "io.r2dbc:r2dbc-pool", version.ref = "r2dbc-pool" }
+r2dbc-postgresql = { module = "org.postgresql:r2dbc-postgresql", version.ref = "r2dbc-postgresql" }
+logback = { module = "ch.qos.logback:logback-classic", version.ref = "logback"}
+
+[bundles]
+database = [
+    "exposed-core",
+    "exposed-json",
+    "r2dbc-pool",
+    "r2dbc-postgresql",
+]
+ktor = [
+    "ktor-client-cio",
+    "ktor-client-content-negotiation",
+    "ktor-client-core",
+    "ktor-serialization-kotlinx-json",
+]

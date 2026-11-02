@@ -1,0 +1,26 @@
+{
+  "triggers" : [
+    "super",
+    "total",
+    "echt"
+  ],
+  "inverters" : [
+    "simon",
+    "wirklich"
+  ],
+  "texts" : [
+    "Der Saturn wandert ins Sternbild des Löwen",
+    "Jupiter verweilt im Sternbild der Jungfrau",
+    "Merkur überholt Venus auf der Ekliptik",
+    "Die Venus erreicht ihren Höchststand",
+    "Venus schreitet weiter auf der Ekliptik vorran",
+    "Saturn nährt sich weiter dem Jupiter",
+    "Uranus nährt sich dem Zenit",
+    "Der Neumond steht vorraus",
+    "Der Mond nimmt weiter ab",
+    "Baldiger Transit der Venus vor dem Merkur",
+    "Der Merkur geht unter",
+    "Der Jupiter erreicht seinen Höchststand",
+    "Merkur wandert in das Sternbild der Fische"
+  ]
+}

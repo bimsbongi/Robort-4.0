@@ -1,0 +1,444 @@
+{
+  "title": "Politischer Kompass",
+  "emoji": ":compass:",
+  "accentColor": 9936031,
+
+  "description": "Finde deine wahre politische Ausrichtung mit diesem einfachen Quiz!",
+
+  "questions": [
+    {
+      "id" : 0,
+      "textContent" : "Kirsche und Staat sollen getrennt sein",
+      "options" : [
+        {
+          "emoji" : "\uD83E\uDD29",
+          "weight" : -20,
+          "secondaryWeight" : -2
+        },
+        {
+          "emoji" : "\uD83D\uDE42",
+          "weight" : -20,
+          "secondaryWeight" : -2
+        },
+        {
+          "emoji" : "\uD83D\uDE10",
+          "weight" : 0,
+          "secondaryWeight" : 0
+        },
+        {
+          "emoji" : "☹\uFE0F",
+          "weight" : 10,
+          "secondaryWeight" : 1
+        },
+        {
+          "emoji" : "\uD83D\uDE20",
+          "weight" : 20,
+          "secondaryWeight" : 2
+        }
+      ]
+    },
+    {
+      "id" : 1,
+      "textContent" : "Kürbise sind Früchte und können somit nicht in eine Gemüse Gesellschat integriert werden",
+      "options" : [
+        {
+          "emoji" : "\uD83E\uDD29",
+          "weight" : 14,
+          "secondaryWeight" : 10
+        },
+        {
+          "emoji" : "\uD83D\uDE42",
+          "weight" : 7,
+          "secondaryWeight" : 5
+        },
+        {
+          "emoji" : "\uD83D\uDE10",
+          "weight" : 0,
+          "secondaryWeight" : 0
+        },
+        {
+          "emoji" : "☹\uFE0F",
+          "weight" : -7,
+          "secondaryWeight" : -5
+        },
+        {
+          "emoji" : "\uD83D\uDE20",
+          "weight" : -14,
+          "secondaryWeight" : -10
+        }
+      ]
+    },
+    {
+      "id" : 2,
+      "textContent" : "Gemüse ist stärker durch Preis als durch Sorte getrennt",
+      "options" : [
+        {
+          "emoji" : "\uD83E\uDD29",
+          "weight" : -14,
+          "secondaryWeight" : -6
+        },
+        {
+          "emoji" : "\uD83D\uDE42",
+          "weight" : -7,
+          "secondaryWeight" : -3
+        },
+        {
+          "emoji" : "\uD83D\uDE10",
+          "weight" : 0,
+          "secondaryWeight" : 0
+        },
+        {
+          "emoji" : "☹\uFE0F",
+          "weight" : 7,
+          "secondaryWeight" : 3
+        },
+        {
+          "emoji" : "\uD83D\uDE20",
+          "weight" : 14,
+          "secondaryWeight" : 6
+        }
+      ]
+    },
+    {
+      "id" : 3,
+      "textContent" : "Der V-Bucks Markt regelt das",
+      "options" : [
+        {
+          "emoji" : "\uD83E\uDD29",
+          "weight" : 10,
+          "secondaryWeight" : -30
+        },
+        {
+          "emoji" : "\uD83D\uDE42",
+          "weight" : 5,
+          "secondaryWeight" : -15
+        },
+        {
+          "emoji" : "\uD83D\uDE10",
+          "weight" : 0,
+          "secondaryWeight" : 0
+        },
+        {
+          "emoji" : "☹\uFE0F",
+          "weight" : -5,
+          "secondaryWeight" : 15
+        },
+        {
+          "emoji" : "\uD83D\uDE20",
+          "weight" : -10,
+          "secondaryWeight" : 30
+        }
+      ]
+    },
+    {
+      "id" : 4,
+      "textContent" : "Die Partei der Blaubeeren soll verboten werden",
+      "options" : [
+        {
+          "emoji" : "\uD83E\uDD29",
+          "weight" : -20,
+          "secondaryWeight" : 10
+        },
+        {
+          "emoji" : "\uD83D\uDE42",
+          "weight" : -10,
+          "secondaryWeight" : 5
+        },
+        {
+          "emoji" : "\uD83D\uDE10",
+          "weight" : 0,
+          "secondaryWeight" : 0
+        },
+        {
+          "emoji" : "☹\uFE0F",
+          "weight" : 10,
+          "secondaryWeight" : -5
+        },
+        {
+          "emoji" : "\uD83D\uDE20",
+          "weight" : 20,
+          "secondaryWeight" : -10
+        }
+      ]
+    },
+    {
+      "id" : 5,
+      "textContent" : "Mohnblumen sind das Opium des Volkes",
+      "options" : [
+        {
+          "emoji" : "\uD83E\uDD29",
+          "weight" : -10,
+          "secondaryWeight" : 0
+        },
+        {
+          "emoji" : "\uD83D\uDE42",
+          "weight" : -5,
+          "secondaryWeight" : 0
+        },
+        {
+          "emoji" : "\uD83D\uDE10",
+          "weight" : 0,
+          "secondaryWeight" : 0
+        },
+        {
+          "emoji" : "☹\uFE0F",
+          "weight" : 5,
+          "secondaryWeight" : 0
+        },
+        {
+          "emoji" : "\uD83D\uDE20",
+          "weight" : 10,
+          "secondaryWeight" : 0
+        }
+      ]
+    },
+    {
+      "id" : 6,
+      "textContent" : "Produktionsmittel, wie Apfelpressen sollen Eigentum der Äpfel sein",
+      "options" : [
+        {
+          "emoji" : "\uD83E\uDD29",
+          "weight" : -10,
+          "secondaryWeight" : -10
+        },
+        {
+          "emoji" : "\uD83D\uDE42",
+          "weight" : -5,
+          "secondaryWeight" : -5
+        },
+        {
+          "emoji" : "\uD83D\uDE10",
+          "weight" : 0,
+          "secondaryWeight" : 0
+        },
+        {
+          "emoji" : "☹\uFE0F",
+          "weight" : 5,
+          "secondaryWeight" : 5
+        },
+        {
+          "emoji" : "\uD83D\uDE20",
+          "weight" : 10,
+          "secondaryWeight" : 5
+        }
+      ]
+    },
+    {
+      "id" : 7,
+      "textContent" : "Die höchste Verwaltungsposition soll von einer Orange besetzt werden",
+      "options" : [
+        {
+          "emoji" : "\uD83E\uDD29",
+          "weight" : 16,
+          "secondaryWeight" : 8
+        },
+        {
+          "emoji" : "\uD83D\uDE42",
+          "weight" : 4,
+          "secondaryWeight" : 8
+        },
+        {
+          "emoji" : "\uD83D\uDE10",
+          "weight" : 0,
+          "secondaryWeight" : 0
+        },
+        {
+          "emoji" : "☹\uFE0F",
+          "weight" : -4,
+          "secondaryWeight" : -8
+        },
+        {
+          "emoji" : "\uD83D\uDE20",
+          "weight" : -8,
+          "secondaryWeight" : -16
+        }
+      ]
+    },
+    {
+      "id" : 8,
+      "textContent" : "Die Straße von Humus soll weiter blockiert werden",
+      "options" : [
+        {
+          "emoji" : "\uD83E\uDD29",
+          "weight" : -6,
+          "secondaryWeight" : 6
+        },
+        {
+          "emoji" : "\uD83D\uDE42",
+          "weight" : -3,
+          "secondaryWeight" : 3
+        },
+        {
+          "emoji" : "\uD83D\uDE10",
+          "weight" : 0,
+          "secondaryWeight" : 0
+        },
+        {
+          "emoji" : "☹\uFE0F",
+          "weight" : 3,
+          "secondaryWeight" : -3
+        },
+        {
+          "emoji" : "\uD83D\uDE20",
+          "weight" : 6,
+          "secondaryWeight" : -6
+        }
+      ]
+    },
+    {
+      "id" : 9,
+      "textContent" : "Niemand hat die Absicht einen Zaun ums Gemüsebeet zu errichten",
+      "options" : [
+        {
+          "emoji" : "\uD83E\uDD29",
+          "weight" : -20,
+          "secondaryWeight" : 20
+        },
+        {
+          "emoji" : "\uD83D\uDE42",
+          "weight" : -10,
+          "secondaryWeight" : 10
+        },
+        {
+          "emoji" : "\uD83D\uDE10",
+          "weight" : 0,
+          "secondaryWeight" : 0
+        },
+        {
+          "emoji" : "☹\uFE0F",
+          "weight" : 10,
+          "secondaryWeight" : -10
+        },
+        {
+          "emoji" : "\uD83D\uDE20",
+          "weight" : 20,
+          "secondaryWeight" : -20
+        }
+      ]
+    },
+    {
+      "id" : 10,
+      "textContent" : "Nuss Nationalisten (Nusszis) sind eine Gefahr für die Gesellschaft",
+      "options" : [
+        {
+          "emoji" : "\uD83E\uDD29",
+          "weight" : -20,
+          "secondaryWeight" : 0
+        },
+        {
+          "emoji" : "\uD83D\uDE42",
+          "weight" : -10,
+          "secondaryWeight" : 0
+        },
+        {
+          "emoji" : "\uD83D\uDE10",
+          "weight" : 0,
+          "secondaryWeight" : 0
+        },
+        {
+          "emoji" : "☹\uFE0F",
+          "weight" : 10,
+          "secondaryWeight" : 0
+        },
+        {
+          "emoji" : "\uD83D\uDE20",
+          "weight" : 20,
+          "secondaryWeight" : 0
+        }
+      ]
+    },
+    {
+      "id": 11,
+      "textContent": "Kürbiskernkraft soll subventioniert werden",
+      "options": [
+        {
+          "emoji": "\uD83E\uDD29",
+          "weight": 0,
+          "secondaryWeight": 10
+        },
+        {
+          "emoji": "\uD83D\uDE42",
+          "weight": 0,
+          "secondaryWeight": 5
+        },
+        {
+          "emoji": "\uD83D\uDE10",
+          "weight": 0,
+          "secondaryWeight": 0
+        },
+        {
+          "emoji": "☹\uFE0F",
+          "weight": 0,
+          "secondaryWeight": -5
+        },
+        {
+          "emoji": "\uD83D\uDE20",
+          "weight": 0,
+          "secondaryWeight": -10
+        }
+      ]
+    },
+    {
+      "id": 12,
+      "textContent": "Besitzer von Lootboxen sollen enteignet werden",
+      "options": [
+        {
+          "emoji": "\uD83E\uDD29",
+          "weight": 0,
+          "secondaryWeight": 10
+        },
+        {
+          "emoji": "\uD83D\uDE42",
+          "weight": 0,
+          "secondaryWeight": 5
+        },
+        {
+          "emoji": "\uD83D\uDE10",
+          "weight": 0,
+          "secondaryWeight": 0
+        },
+        {
+          "emoji": "☹\uFE0F",
+          "weight": 0,
+          "secondaryWeight": -5
+        },
+        {
+          "emoji": "\uD83D\uDE20",
+          "weight": 0,
+          "secondaryWeight": -10
+        }
+      ]
+    },
+    {
+      "id": 13,
+      "textContent": "Vegane Karotten sollen nicht als Karotten bezeichnet werden dürfen",
+      "options": [
+        {
+          "emoji": "\uD83E\uDD29",
+          "weight": 10,
+          "secondaryWeight": 10
+        },
+        {
+          "emoji": "\uD83D\uDE42",
+          "weight": 5,
+          "secondaryWeight": 5
+        },
+        {
+          "emoji": "\uD83D\uDE10",
+          "weight": 0,
+          "secondaryWeight": 0
+        },
+        {
+          "emoji": "☹\uFE0F",
+          "weight": -5,
+          "secondaryWeight": -5
+        },
+        {
+          "emoji": "\uD83D\uDE20",
+          "weight": -10,
+          "secondaryWeight": -10
+        }
+      ]
+    }
+  ]
+}

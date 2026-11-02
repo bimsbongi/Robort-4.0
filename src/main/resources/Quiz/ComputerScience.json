@@ -1,0 +1,250 @@
+{
+  "title" : "Informatik-o-mat",
+  "emoji" : ":desktop:",
+  "accentColor" : 31660,
+
+  "description" : "Beantworte ** _O(1)_ ** Fragem um statistischer Insignifikanz (p ca. 0.5) festzustellen, ob du chronischer Informatiker bist.",
+
+  "questions" : [
+    {
+      "id" : 0,
+      "textContent" : "Denkst du, wenn du den Begriff \"Gruppe\" hörst an Mathematik?",
+      "options" : [
+        {
+          "name" : "Ja",
+          "emoji" : "✅",
+          "weight" : 25
+        },
+        {
+          "name" : "Nein",
+          "emoji" : "❌",
+          "weight" : 0
+        }
+      ]
+    },
+    {
+      "id" : 1,
+      "textContent" : "Hast du Discord illegal genutzt (zu jung)?",
+      "options" : [
+        {
+          "name" : "Ja",
+          "emoji" : "✅",
+          "weight" : 5
+        },
+        {
+          "name" : "Nein",
+          "emoji" : "❌",
+          "weight" : 0
+        }
+      ]
+    },
+    {
+      "id" : 2,
+      "textContent" : "Ist formale Sprache höflich?",
+      "options" : [
+        {
+          "name" : "Ja",
+          "emoji" : "✅",
+          "weight" : 0
+        },
+        {
+          "name" : "Nein",
+          "emoji" : "❌",
+          "weight" : 25
+        }
+      ]
+    },
+    {
+      "id" : 3,
+      "textContent" : "Musst du von deinem Schreibtisch aufstehen um das Licht an zu schalten?",
+      "options" : [
+        {
+          "name" : "Ja",
+          "emoji" : "✅",
+          "weight" : 0
+        },
+        {
+          "name" : "Nein",
+          "emoji" : "❌",
+          "weight" : 20
+        }
+      ]
+    },
+    {
+      "id" : 4,
+      "textContent" : "Hast du schon mal daran gedacht, ob das Universum abzählbar oder überabzählbar unendlich ist?",
+      "options" : [
+        {
+          "name" : "Ja",
+          "emoji" : "✅",
+          "weight" : 20
+        },
+        {
+          "name" : "Nein",
+          "emoji" : "❌",
+          "weight" : 0
+        }
+      ]
+    },
+    {
+      "id" : 5,
+      "textContent" : "Programmierst du schon seit dem letzten Jahrzehnt?",
+      "options" : [
+        {
+          "name" : "Ja",
+          "emoji" : "✅",
+          "weight" : 40
+        },
+        {
+          "name" : "Nein",
+          "emoji" : "❌",
+          "weight" : 0
+        }
+      ]
+    },
+    {
+      "id" : 6,
+      "textContent" : "Weißt du, wie ein Comparator in Minecraft funktioniert?",
+      "options" : [
+        {
+          "name" : "Ja",
+          "emoji" : "✅",
+          "weight" : 10
+        },
+        {
+          "name" : "Nein",
+          "emoji" : "❌",
+          "weight" : 0
+        }
+      ]
+    },
+    {
+      "id" : 7,
+      "textContent" : "Hast du mehr als einen Monat deines Lebens (720 Stunden) in einem einzelnen Computerspiel verbracht?",
+      "options" : [
+        {
+          "name" : "Ja",
+          "emoji" : "✅",
+          "weight" : 10
+        },
+        {
+          "name" : "Nein",
+          "emoji" : "❌",
+          "weight" : 0
+        }
+      ]
+    },
+    {
+      "id" : 8,
+      "textContent" : "Besitzt du mehr Paar Schuhe als Computer?",
+      "options" : [
+        {
+          "name" : "Ja",
+          "emoji" : "✅",
+          "weight" : 0
+        },
+        {
+          "name" : "Nein",
+          "emoji" : "❌",
+          "weight" : 20
+        }
+      ]
+    },
+    {
+      "id" : 9,
+      "textContent" : "Bedeutet *ssh*, dass man leise sein soll?",
+      "options" : [
+        {
+          "name" : "Ja",
+          "emoji" : "✅",
+          "weight" : 0
+        },
+        {
+          "name" : "Nein",
+          "emoji" : "❌",
+          "weight" : 20
+        }
+      ]
+    },
+    {
+      "id" : 10,
+      "textContent" : "Ist deine Sportnote mindestens 3 Punkte schlechter als die in Mathe?",
+      "options" : [
+        {
+          "name" : "Ja",
+          "emoji" : "✅",
+          "weight" : 15
+        },
+        {
+          "name" : "Nein",
+          "emoji" : "❌",
+          "weight" : 0
+        }
+      ]
+    },
+    {
+      "id" : 11,
+      "textContent" : "Bleibt etwas sortiert, wenn du die mischen Operation anwendest?",
+      "options" : [
+        {
+          "name" : "Ja",
+          "emoji" : "✅",
+          "weight" : 10
+        },
+        {
+          "name" : "Nein",
+          "emoji" : "❌",
+          "weight" : 0
+        }
+      ]
+    },
+    {
+      "id" : 12,
+      "textContent" : "Hast du mehr als 15 Progamme, deren Namen mit K beginnen auf deinem Computer?",
+      "options" : [
+        {
+          "name" : "Ja",
+          "emoji" : "✅",
+          "weight" : 50
+        },
+        {
+          "name" : "Nein",
+          "emoji" : "❌",
+          "weight" : 0
+        }
+      ]
+    },
+    {
+      "id" : 13,
+      "textContent" : "Gibt es beim Halten ein Problem?",
+      "options" : [
+        {
+          "name" : "Ja",
+          "emoji" : "✅",
+          "weight" : 20
+        },
+        {
+          "name" : "Nein",
+          "emoji" : "❌",
+          "weight" : 0
+        }
+      ]
+    },
+    {
+      "id" : 14,
+      "textContent" : "Würdest du jemandem sagen, dass du dein Betriebssystem \"by the way\" nutzt?",
+      "options" : [
+        {
+          "name" : "Ja",
+          "emoji" : "✅",
+          "weight" : 20
+        },
+        {
+          "name" : "Nein",
+          "emoji" : "❌",
+          "weight" : 0
+        }
+      ]
+    }
+  ]
+}

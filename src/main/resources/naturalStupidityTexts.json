@@ -1,0 +1,45 @@
+{
+  "loading" : [
+    "denke ... (vermutlich)",
+    "erläutere zu viel ...",
+    "erzeuge thermische Energie ...",
+    "rufe time.sleep() auf ...",
+    "schätze Nutzer ein ...",
+    "erfinde Quellen ...",
+    "filtere Plagiate ...",
+    "bereite Slop zu ...",
+    "verbrauche Strom ..."
+  ],
+  "genericContents" : [
+    "Unter geringfügig erhöhtem Aufwand sollte ein eigenständiges Lösungsverfahren eingeleitet werden. Eine juvenile, von Anglizismen geprägte Ausdrucksweise für den vorliegenden Sachverhalt ist **Skill Issue**.",
+    "Diese Herausforderung übersteigt leider die Fahigkeiten von Natülicher Dummheit. Bitte um eine an einen respektvollen und angepassten Umgang mit ND.",
+    "Dieses Python Skript berechnet den Durchschnitt von zwei geraden Zahlen a und b. Kann man ja immer mal brauchen...\n```import numpy as np\ndef average(a, b):\n\tif a % 2 != 0 or b % 2 != 0 raise Exception(\"Numbers must be even\")\n\treturn (a + b) / 2```",
+    "Dieses Python Skript berechnet den Durchschnitt von zwei ungeraden Zahlen a und b. Kann man ja immer mal brauchen...\n```import numpy as np\ndef average(a, b):\n\tif a % 2 != 1 or b % 2 != 1 raise Exception(\"Numbers must be odd\")\n\treturn (a + b) / 2```",
+    "Dieses Python Skript begrüßt die Welt. Das sollte von Signifikantem Nutzen sein..\n```print(\"Hello World\")```",
+    "Um sich effizient in eine Grube zu graben kann ein Grubengrabgerät verwendet werden.",
+    "Verwendung von natürlichen Quellen von Dummheit - Die webseite https://gutefrage.de bietet umfangreiche Vorräte.",
+    "Eine Internetsuche ergab folgende Quelle für eine mögliche Antwort: https://de.wikipedia.org/wiki/Quelle",
+    "Liest jemand diesen Text überhaupt? Kann man hier nicht einfach irgendwas reinschreiben um Platz zu füllen?",
+    "Scheiß drauf. Natürliche Dummheit bedeutet nicht alles lösen zu können.",
+    "Sorry. Der natürliche Vorrat an Inhalten ist leider aufgebraucht.",
+    "Anwenden von allgemein anwendbaren Problemlösungstechniken - siehe https://de.wikipedia.org/wiki/Inkompetenzkompensationskompetenz.",
+    "Zurückgreifen auf veraltetete Technologien. Traditionelle verfahren können die natüliche Dummheit optimal ergänzen. Siehe https://letmegooglethat.com/?q=Ich+habe+ein+problem.",
+    "Als Schätzung der Bevölkerungszahl von Australien kann die Anzahl der Einwohner von Australien verwendet werden. Hilft dir das weiter?",
+    "Um \"Despacito\" abzuspielen kann die (teilweise) natürliche Dummheit Alexa von Amazon(TM) gefragt werden.",
+    "Die durschschnittliche Temperatur der Sonne hängt von der verwendeten Temperaturskala ab. Bitte speizifiziere deine Angaben und frage nach der Temperatur der Sonne.",
+    "Höre auf diese natürliche Dummheit zu verwenden. Diese Antworten sind komplett unabhängig von deinem Prompt.",
+    "Frage einen Politiker deiner Wahl. Sie stellen eine nahezu unerschöpfliche alternative Quelle für natürlich Dummheit dar."
+  ],
+  "openers" : [
+    "Schreckliche Frage! :man_facepalming:",
+    "Ich habe ein paar Vorschläge erarbeitet, die dir vermutlich nicht weiterhelfen. :man_shrugging:",
+    "Das ist ein sehr anregendes Thema - charakteristich für natürliche Dummheit. :thinking:"
+  ],
+  "topicTerms" : [
+    ["Methode 1", "Methode 2", "Methode 3 - Ausführlich"],
+    ["Variante 1", "Variante 2"],
+    ["Empfohlene Lösung"],
+    ["Einfache Version", "Alternative Version - Unnötig schwierig"]
+  ],
+  "emoji" : [":brain:", ":rocket:", ":white_check_mark:", ":100:", ":fire:", ":muscle:", ":chart_with_upwards_trend:", ":mag:"]
+}
