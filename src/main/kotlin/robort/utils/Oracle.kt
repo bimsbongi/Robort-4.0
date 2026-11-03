@@ -15,7 +15,7 @@ private data class OracleTexts(
     val texts: List<String>,
 )
 
-private val oracleFile = object {}.javaClass.getResource("/oracleTexts.json")?: error("Could not load oracleTexts.json")
+private val oracleFile = loadResourceFile("/oracleTexts.json")?: error("Could not load oracleTexts.json")
 private val oracleTexts = Json.decodeFromString<OracleTexts>(oracleFile.readText())
 
 private fun generateFirmament(): String {

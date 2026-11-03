@@ -18,7 +18,7 @@ private data class NaturalStupidityTexts(
     val emoji: List<String>,
 )
 
-private val naturalStupidityFile = object {}.javaClass.getResource("/naturalStupidityTexts.json")?: error("Could not load naturalStupidityTexts.json")
+private val naturalStupidityFile = loadResourceFile("/naturalStupidityTexts.json")?: error("Could not load naturalStupidityTexts.json")
 private val naturalStupidityTexts = Json.decodeFromString<NaturalStupidityTexts>(naturalStupidityFile.readText())
 
 private fun generateNaturalStupidityPromptContent(prompt: String) = Embed (

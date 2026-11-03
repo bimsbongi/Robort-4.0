@@ -5,6 +5,8 @@ import dev.minn.jda.ktx.events.listener
 import net.dv8tion.jda.api.JDA
 import net.dv8tion.jda.api.entities.channel.middleman.MessageChannel
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent
+import java.io.File
+import java.net.URL
 import kotlin.time.Duration
 
 fun JDA.onSlashCommand(name: String, timeout: Duration? = null, consumer: suspend CoroutineEventListener.(SlashCommandInteractionEvent) -> Unit) = listener<SlashCommandInteractionEvent>(timeout=timeout) {
@@ -12,6 +14,4 @@ fun JDA.onSlashCommand(name: String, timeout: Duration? = null, consumer: suspen
         consumer(it)
 }
 
-interface ChannelActivity {
-    val channel: MessageChannel
-}
+fun loadResourceFile(path: String): File? = object {}.javaClass.getResource(path)?.file?.let { File(it) }

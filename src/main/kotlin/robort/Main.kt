@@ -1,10 +1,14 @@
 package robort
 
 import dev.minn.jda.ktx.coroutines.await
+import dev.minn.jda.ktx.events.listener
 import dev.minn.jda.ktx.jdabuilder.default
 import net.dv8tion.jda.api.JDA
+import net.dv8tion.jda.api.events.interaction.component.ButtonInteractionEvent
 import net.dv8tion.jda.api.interactions.commands.OptionType
 import org.slf4j.LoggerFactory
+import robort.quiz.requestBigQuestionsQuizCommand
+import robort.quiz.requestComputerScienceQuizCommand
 import robort.utils.animatePanda
 import robort.utils.askNaturalStupidityCommand
 import robort.utils.askOracleCommand
@@ -44,5 +48,26 @@ suspend fun registerCommands(jda: JDA) {
         askNaturalStupidityCommand(it)
     }
 
+    jda.upsertCommand("informatik-o-mat", "Diagnostiziert chronische Informatik und verbundene Krankheiten").await()
+    jda.onSlashCommand("informatik-o-mat") {
+        requestComputerScienceQuizCommand(it)
+    }
+
+    jda.upsertCommand("bigquestions", "Die wichtigen Fragen im Leben").await()
+    jda.onSlashCommand("bigquestions") {
+        requestBigQuestionsQuizCommand(it)
+    }
+
     mainLogger.info("Registered all commands")
+
+    jda.listener<ButtonInteractionEvent> { event ->
+        runningActivities.forEach { (channelId, activity) ->
+            if (channelId != event.interaction.channel.idLong) return@forEach
+
+            activity.processButtonClick(event)
+        }
+        event.interaction.deferEdit().await()
+    }
+
+    mainLogger.info("Registered all listeners")
 }

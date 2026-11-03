@@ -2,8 +2,9 @@ package robort.utils
 
 import dev.minn.jda.ktx.coroutines.await
 import net.dv8tion.jda.api.events.interaction.command.GenericCommandInteractionEvent
+import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent
 
-suspend fun showProfileColorCommand(interaction: GenericCommandInteractionEvent) {
+suspend fun showProfileColorCommand(interaction: SlashCommandInteractionEvent) {
     val user = interaction.getOption("user")?.asUser?: error("User for profile color query does not exist.")
     val colorId = ((user.id.toBigInteger().shiftRight(22)) % 6.toBigInteger()).toInt()
 

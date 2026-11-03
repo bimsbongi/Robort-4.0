@@ -179,11 +179,11 @@
       "textContent" : "Wird das Dateiformat GIF als \\\"jif\\\" ausgesprochen?",
       "options" : [
         {
-          "name" : "Ja, jif!",
+          "name" : "Ja, jif",
           "emoji" : "✅"
         },
         {
-          "name" : "Nein, GIF!",
+          "name" : "Nein, GIF",
           "emoji" : "❌"
         }
       ]
@@ -193,11 +193,11 @@
       "textContent" : "Ist Muttermilch vegan?",
       "options" : [
         {
-          "name" : "Ja, vegan!",
+          "name" : "Ja, vegan",
           "emoji" : "✅"
         },
         {
-          "name" : "Nein, nicht vegan!",
+          "name" : "Nein, nicht vegan",
           "emoji" : "❌"
         }
       ]
