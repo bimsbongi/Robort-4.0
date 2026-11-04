@@ -120,7 +120,7 @@ class Quiz (
                     }
                 }
             }
-        }
+        }?.await()
 
         currentIndex += 1
 
