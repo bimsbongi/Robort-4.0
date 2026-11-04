@@ -148,7 +148,8 @@
     },
     {
       "id" : 10,
-      "textContent" : "Ist das Kleid blau-schwarz? (nachschauen falls du es nicht kennst)",
+      "textContent" : "Ist das Kleid blau-schwarz?",
+      "imagePath" : "/Quiz/BigQuestionsAssets/dress.jpg",
       "options" : [
         {
           "name" : "Ja, blau-schwarz",

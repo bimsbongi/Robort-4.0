@@ -1,0 +1,33 @@
+package robort.quiz
+
+import dev.minn.jda.ktx.coroutines.await
+import dev.minn.jda.ktx.messages.Embed
+import kotlinx.serialization.json.Json
+import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent
+import robort.runningActivities
+import robort.utils.loadResourceFile
+
+private val artQuizDataFile = loadResourceFile("/Quiz/art.json")?: error("Could not load Quiz/art.json")
+val artQuizData = Json.decodeFromString<QuizData>(artQuizDataFile.readText())
+
+suspend fun requestArtQuizCommand(interaction: SlashCommandInteractionEvent) {
+    if (runningActivities.containsKey(interaction.channel.idLong)) {
+        interaction.reply(":no_entry: In diesem Kanal läuft noch eine andere Aktivität. Warte kurz oder nutze einen anderen Kanal.").setEphemeral(true).await()
+        return
+    }
+
+    val quiz = Quiz(artQuizData, interaction.channel, interaction.user, ArtQuizResultCalculator, true)
+    runningActivities[quiz.channel.idLong] = quiz
+    quiz.startQuizCommand(interaction)
+}
+
+data object ArtQuizResultCalculator : QuizResultCalculator {
+    override fun calculateResults(quiz: Quiz) = Embed {
+
+        // TODO evaluate largest correspondences
+
+        title = "Vielen Dank für deine Teilnahme!"
+        color = quiz.quizData.accentColor
+        description = "Die anderen haben halt keine Ahnung von echter Kunst :wink:"
+    }
+}

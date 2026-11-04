@@ -6,8 +6,6 @@ import kotlinx.serialization.json.Json
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent
 import robort.runningActivities
 import robort.utils.loadResourceFile
-import kotlin.math.max
-import kotlin.math.min
 
 private val bigQuestionsQuizDataFile = loadResourceFile("/Quiz/bigQuestions.json")?: error("Could not load Quiz/bigQuestions.json")
 val bigQuestionsQuizData = Json.decodeFromString<QuizData>(bigQuestionsQuizDataFile.readText())
@@ -30,5 +28,6 @@ data object BigQuestionsQuizResultCalculator : QuizResultCalculator {
 
         title = "Vielen Dank für deine Teilnahme!"
         color = quiz.quizData.accentColor
+        description = "Die anderen haben halt keine Ahnung von der Welt :wink:"
     }
 }

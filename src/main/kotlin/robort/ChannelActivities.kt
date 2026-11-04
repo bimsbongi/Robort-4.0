@@ -3,6 +3,8 @@ package robort
 import net.dv8tion.jda.api.entities.Message
 import net.dv8tion.jda.api.entities.channel.middleman.MessageChannel
 import net.dv8tion.jda.api.events.interaction.component.ButtonInteractionEvent
+import robort.quiz.Question
+import robort.quiz.QuizData
 
 interface ChannelActivity {
     val channel: MessageChannel
