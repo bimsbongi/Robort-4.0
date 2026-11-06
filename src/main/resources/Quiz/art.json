@@ -2,13 +2,14 @@
   "title": "Ist das Kunst oder kann das weg?",
   "emoji": ":art:",
   "accentColor": 16777215,
+  "questionName" : "Werk",
 
   "description": "Wähle aus, ob dies echte Werke der Kunst sind oder einfach weg können.\n\nDie Antworten anderer User auf diesem Sever stehen auch zur Verfügung, damit du weißt wer endlich mal die Wahrheit hören muss.",
 
   "questions": [
     {
       "id" : 0,
-      "textContent" : "Leonardo da Vinci\n _Mona Lisa_, 1506\n\nGemälde",
+      "textContent" : "Leonardo da Vinci\n_Mona Lisa_, 1506\n\nGemälde",
       "imagePath" : "/Quiz/ArtAssets/monaLisa.webp",
       "options" : [
         {
@@ -25,7 +26,7 @@
     },
     {
       "id" : 1,
-      "textContent" : "Team Cherry\n _Hollow Knight_, 2017\n\nVideospiel",
+      "textContent" : "Team Cherry\n_Hollow Knight_, 2017\n\nVideospiel\n\nhttps://store.steampowered.com/app/367520/Hollow_Knight/",
       "imagePath" : "/Quiz/ArtAssets/hollowKnight.jpg",
       "options" : [
         {
@@ -42,7 +43,7 @@
     },
     {
       "id" : 2,
-      "textContent" : "Ludwig van Beethoven\n _Symphony No. 9_, 1824\n\nSymphonie\n\nhttps://www.youtube.com/watch?v=gT91esZK90I",
+      "textContent" : "Ludwig van Beethoven\n_Symphony No. 9_, 1824\n\nSymphonie\n\nhttps://www.youtube.com/watch?v=gT91esZK90I",
       "options" : [
         {
           "name" : "Kunst!",
@@ -58,7 +59,7 @@
     },
     {
       "id" : 3,
-      "textContent" : "Fritz Leonhardt\n _Fernsehturm Stuttgart_, 1956\n\nGebäude",
+      "textContent" : "Fritz Leonhardt\n_Fernsehturm Stuttgart_, 1956\n\nGebäude",
       "imagePath" : "/Quiz/ArtAssets/fernsehturm.jpg",
       "options" : [
         {
@@ -75,7 +76,7 @@
     },
     {
       "id" : 4,
-      "textContent" : "Tobias\n _Haus_, 2026\n\nDigitale Skulptur",
+      "textContent" : "Tobias\n_Haus_, 2026\n\nDigitale Skulptur",
       "imagePath" : "/Quiz/ArtAssets/dirtHut.png",
       "options" : [
         {
@@ -92,7 +93,7 @@
     },
     {
       "id" : 5,
-      "textContent" : "Galileel\n _Der 1&1 Willkommens-Song_, 2017\n\nYouTube Kacke\n\nhttps://www.youtube.com/watch?v=D9LxMut3TMM",
+      "textContent" : "Galileel\n_Der 1&1 Willkommens-Song_, 2017\n\nYouTube Kacke\n\nhttps://www.youtube.com/watch?v=D9LxMut3TMM",
       "imagePath" : "/Quiz/ArtAssets/MarcelDavis.png",
       "options" : [
         {
@@ -109,7 +110,7 @@
     },
     {
       "id" : 6,
-      "textContent" : "Maurizio Cattelan\n _Comedian_, 2019\n\nSkulptur",
+      "textContent" : "Maurizio Cattelan\n_Comedian_, 2019\n\nSkulptur",
       "imagePath" : "/Quiz/ArtAssets/banana.jpg",
       "options" : [
         {
@@ -126,7 +127,7 @@
     },
     {
       "id" : 7,
-      "textContent" : "Tobias\n _Burg_, 2013\n\nGemälde",
+      "textContent" : "Tobias\n_Burg_, 2013\n\nGemälde",
       "imagePath" : "/Quiz/ArtAssets/burg.png",
       "options" : [
         {
@@ -143,7 +144,7 @@
     },
     {
       "id" : 8,
-      "textContent" : "Die Natur\n _Unbekannt_, 2022\n\nSkulptur\n\nhttps://events.gea.de/event-portal_artikel,-kaputtes-opern-dach-wird-im-see-eingeweiht-_arid,6592894.html",
+      "textContent" : "Die Natur\n_Unbekannt_, 2022\n\nSkulptur\n\nhttps://events.gea.de/event-portal_artikel,-kaputtes-opern-dach-wird-im-see-eingeweiht-_arid,6592894.html",
       "imagePath" : "/Quiz/ArtAssets/opernDach.jpeg",
       "options" : [
         {
@@ -160,7 +161,7 @@
     },
     {
       "id" : 9,
-      "textContent" : "Noxa\n _Tung Tung Tung Sahur_, 2025\n\nItalian Brainrot",
+      "textContent" : "Noxa\n_Tung Tung Tung Sahur_, 2025\n\nItalian Brainrot",
       "imagePath" : "/Quiz/ArtAssets/TungTungTungSahur.png",
       "options" : [
         {
@@ -177,7 +178,7 @@
     },
     {
       "id" : 10,
-      "textContent" : "rply\n _commatose_, 2024\n\nGeometry Dash Level\n\nhttps://www.youtube.com/watch?v=CC3gDTn-8_8",
+      "textContent" : "rply\n_commatose_, 2024\n\nGeometry Dash Level\n\nhttps://www.youtube.com/watch?v=CC3gDTn-8_8",
       "imagePath" : "/Quiz/ArtAssets/commatose.png",
       "options" : [
         {
@@ -194,7 +195,7 @@
     },
     {
       "id" : 11,
-      "textContent" : "NGL Abi Jahrgang 2023\n _Abistreich_, 2023\n\nEventkunst",
+      "textContent" : "NGL Abi Jahrgang 2023\n_Abistreich_, 2023\n\nEventkunst",
       "imagePath" : "/Quiz/ArtAssets/Abistreich.jpg",
       "options" : [
         {
@@ -211,7 +212,7 @@
     },
     {
       "id" : 12,
-      "textContent" : "Tobias\n _#123456_, 2023\n\nDigitales Gemälde",
+      "textContent" : "Tobias\n_#123456_, 2023\n\nDigitales Gemälde",
       "imagePath" : "/Quiz/ArtAssets/color.png",
       "options" : [
         {
@@ -228,7 +229,7 @@
     },
     {
       "id" : 13,
-      "textContent" : "Tobias\n _Robort_, 2021\n\nDiscord Bot",
+      "textContent" : "Tobias\n_Robort_, 2021\n\nDiscord Bot",
       "imagePath" : "/Quiz/ArtAssets/robort.png",
       "options" : [
         {
@@ -245,7 +246,7 @@
     },
     {
       "id" : 14,
-      "textContent" : "Jonas\n _Pizzawärmer_, 2026\n\nSkulptur",
+      "textContent" : "Jonas\n_Pizzawärmer_, 2026\n\nSkulptur",
       "imagePath" : "/Quiz/ArtAssets/lampHeater.jpg",
       "options" : [
         {
@@ -262,7 +263,7 @@
     },
     {
       "id" : 15,
-      "textContent" : "Stefan Z.\n _Splinoraptor_, 2025\n\nDigitale Zeichnung",
+      "textContent" : "Stefan Z.\n_Splinoraptor_, 2025\n\nDigitale Zeichnung",
       "imagePath" : "/Quiz/ArtAssets/splinoraptor.png",
       "options" : [
         {
@@ -279,7 +280,7 @@
     },
     {
       "id" : 16,
-      "textContent" : "Anonymer Pilz\n _Unbekannt_, 2025\n\nImprovisierte Musikaufführung\n\nhttps://www.youtube.com/watch?v=hgmi4wvODvo",
+      "textContent" : "Anonymer Pilz\n_Unbekannt_, 2025\n\nImprovisierte Musikaufführung\n\nhttps://www.youtube.com/watch?v=hgmi4wvODvo",
       "options" : [
         {
           "name" : "Kunst!",
@@ -295,7 +296,7 @@
     },
     {
       "id" : 17,
-      "textContent" : "Felix\n _Unbekannt_, 2026\n\nSkulptur",
+      "textContent" : "Felix\n_Unbekannt_, 2026\n\nSkulptur",
       "imagePath" : "/Quiz/ArtAssets/aufzug.jpg",
       "options" : [
         {

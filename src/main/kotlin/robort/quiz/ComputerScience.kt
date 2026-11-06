@@ -1,11 +1,13 @@
 package robort.quiz
 
 import dev.minn.jda.ktx.coroutines.await
+import dev.minn.jda.ktx.interactions.components.Container
 import dev.minn.jda.ktx.messages.Embed
 import kotlinx.serialization.json.Json
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent
 import robort.runningActivities
 import robort.utils.loadResourceFile
+import java.awt.Color
 import kotlin.math.max
 import kotlin.math.min
 
@@ -24,7 +26,7 @@ suspend fun requestComputerScienceQuizCommand(interaction: SlashCommandInteracti
 }
 
 data object ComputerScienceQuizResultCalculator : QuizResultCalculator {
-    override fun calculateResults(quiz: Quiz) = Embed {
+    override fun calculateResults(quiz: Quiz) = Container {
         val topPoints = max(0, quiz.weightSum - 30)
         val scaleIndex = 4 - min(4, (topPoints / 50));
         val scaleTemplate = arrayOf(
@@ -42,8 +44,7 @@ data object ComputerScienceQuizResultCalculator : QuizResultCalculator {
             }
         }
 
-        title = ":dna: Offizielle Diagnose"
-        description = "Der Informatik-o-mat hat für ${quiz.player.asMention} ergeben: \n\n***${quiz.weightSum} Punkte***\n$scale"
-        color = quiz.quizData.accentColor
+        text(content = "## :dna: Offizielle Diagnose\nDer Informatik-o-mat hat für ${quiz.player.asMention} ergeben: \n\n***${quiz.weightSum} Punkte***\n$scale")
+        accentColor = Color(quiz.quizData.accentColor)
     }
 }

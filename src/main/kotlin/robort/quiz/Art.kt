@@ -1,11 +1,12 @@
 package robort.quiz
 
 import dev.minn.jda.ktx.coroutines.await
-import dev.minn.jda.ktx.messages.Embed
+import dev.minn.jda.ktx.interactions.components.Container
 import kotlinx.serialization.json.Json
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent
 import robort.runningActivities
 import robort.utils.loadResourceFile
+import java.awt.Color
 
 private val artQuizDataFile = loadResourceFile("/Quiz/art.json")?: error("Could not load Quiz/art.json")
 val artQuizData = Json.decodeFromString<QuizData>(artQuizDataFile.readText())
@@ -22,12 +23,9 @@ suspend fun requestArtQuizCommand(interaction: SlashCommandInteractionEvent) {
 }
 
 data object ArtQuizResultCalculator : QuizResultCalculator {
-    override fun calculateResults(quiz: Quiz) = Embed {
+    override fun calculateResults(quiz: Quiz) = Container {
+        accentColor = Color(quiz.quizData.accentColor)
 
-        // TODO evaluate largest correspondences
-
-        title = "Vielen Dank für deine Teilnahme!"
-        color = quiz.quizData.accentColor
-        description = "Die anderen haben halt keine Ahnung von echter Kunst :wink:"
+        text(content = "## Vielen Dank für deine Teilnahme!\nDie anderen haben halt keine Ahnung von echter Kunst :wink:")
     }
 }

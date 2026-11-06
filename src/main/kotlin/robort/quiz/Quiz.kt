@@ -2,14 +2,16 @@ package robort.quiz
 
 import dev.minn.jda.ktx.coroutines.await
 import dev.minn.jda.ktx.interactions.components.Container
-import dev.minn.jda.ktx.messages.Embed
+import dev.minn.jda.ktx.messages.MentionConfig
+import dev.minn.jda.ktx.messages.Mentions
 import dev.minn.jda.ktx.messages.edit
+import dev.minn.jda.ktx.messages.reply_
 import dev.minn.jda.ktx.messages.send
 import kotlinx.coroutines.delay
 import kotlinx.serialization.Serializable
 import net.dv8tion.jda.api.components.buttons.ButtonStyle
+import net.dv8tion.jda.api.components.container.Container
 import net.dv8tion.jda.api.entities.Message
-import net.dv8tion.jda.api.entities.MessageEmbed
 import net.dv8tion.jda.api.entities.User
 import net.dv8tion.jda.api.entities.channel.middleman.MessageChannel
 import net.dv8tion.jda.api.entities.emoji.Emoji
@@ -23,7 +25,7 @@ import java.awt.Color
 import kotlin.time.Duration.Companion.seconds
 
 sealed interface QuizResultCalculator {
-    fun calculateResults(quiz: Quiz): MessageEmbed
+    fun calculateResults(quiz: Quiz): Container
 }
 
 @Serializable
@@ -47,20 +49,21 @@ data class QuizData (
     val title: String,
     val emoji: String,
     val accentColor: Int,
+    val questionName: String,
 
     val description: String,
     val questions: List<Question>,
 )
 
-data class UserQuizAnswer(val userId: Long, val responses: Map<Int, Int>)
+data class UserQuizAnswer(val answers: Map<Int, Int>)
 
 class Quiz (
     val quizData: QuizData,
     override val channel: MessageChannel,
     val player: User,
     val resultCalculator: QuizResultCalculator,
-    val revealOtherUserAnswers: Boolean = false,
-    val otherUserAnswers: List<UserQuizAnswer> = emptyList()
+    val revealGuildMemberAnswers: Boolean = false,
+    val guildMemberAnswers: MutableMap<Long, UserQuizAnswer> = mutableMapOf()
 ) : ChannelActivity {
     var currentIndex = 0
     var lastQuestionMessage: Message? = null
@@ -69,16 +72,20 @@ class Quiz (
     var secondaryWeightSum = 0
     val shuffledQuestions = quizData.questions.shuffled()
 
-    private fun startEmbed() = Embed (
-        title = "${quizData.emoji} ${quizData.title}",
-        description = quizData.description,
-        authorName = player.effectiveName,
-        authorIcon = player.effectiveAvatarUrl,
-        color = quizData.accentColor
-    )
-
     suspend fun startQuizCommand(interaction: SlashCommandInteractionEvent) {
-        interaction.replyEmbeds(startEmbed()).await()
+        interaction.reply_ {
+            useComponentsV2 = true
+            components += startContainer()
+        }.await()
+        delay(1.seconds)
+        sendNextQuestion()
+    }
+
+    suspend fun startQuizRemote() {
+        channel.send {
+            useComponentsV2 = true
+            components += startContainer()
+        }.await()
         delay(1.seconds)
         sendNextQuestion()
     }
@@ -91,35 +98,11 @@ class Quiz (
         weightSum += shuffledQuestions[currentIndex].options[answerIndex].weight
         secondaryWeightSum += shuffledQuestions[currentIndex].options[answerIndex].secondaryWeight
 
-        // TODO reveal other user answers
+        guildMemberAnswers[player.idLong] = UserQuizAnswer(answers)
 
         lastQuestionMessage?.edit {
-            val imagePath = shuffledQuestions[currentIndex].imagePath
-
             useComponentsV2 = true
-            components += Container {
-                accentColor = Color(quizData.accentColor)
-                text(content = "### ${quizData.emoji} Frage Nr. ${currentIndex + 1}")
-
-                if (imagePath != null) {
-                    mediaGallery {
-                        item("attachment://$imagePath")
-                    }
-                }
-                text(content = shuffledQuestions[currentIndex].textContent)
-
-                actionRow {
-                    shuffledQuestions[currentIndex].options.forEachIndexed { idx, option ->
-                        button(
-                            if (answerIndex == idx) ButtonStyle.PRIMARY else ButtonStyle.SECONDARY,
-                            idx.toString(),
-                            option.name,
-                            Emoji.fromUnicode(option.emoji),
-                            true
-                        )
-                    }
-                }
-            }
+            components += questionContainer(answerIndex) { fileUpload -> files += fileUpload }
         }?.await()
 
         currentIndex += 1
@@ -129,41 +112,12 @@ class Quiz (
             return
         }
 
-        val resultEmbed = resultCalculator.calculateResults(this)
-        channel.sendMessageEmbeds(resultEmbed).await()
-        runningActivities.remove(channel.idLong)
-    }
-
-    suspend fun sendNextQuestion() {
-        lastQuestionMessage = channel.send {
-            val imagePath = shuffledQuestions[currentIndex].imagePath
-
+        channel.send {
             useComponentsV2 = true
-            components += Container {
-                accentColor = Color(quizData.accentColor)
-                text(content = "### ${quizData.emoji} Frage Nr. ${currentIndex + 1}")
-
-                if (imagePath != null) {
-                    mediaGallery {
-                        item("attachment://$imagePath")
-                    }
-                    val imageFile = loadResourceFile(imagePath)?: error("Failed to load image file $imagePath")
-                    files += FileUpload.fromData(imageFile, imagePath)
-                }
-                text(content = shuffledQuestions[currentIndex].textContent)
-
-                actionRow {
-                    shuffledQuestions[currentIndex].options.forEachIndexed { idx, option ->
-                        button(
-                            ButtonStyle.SECONDARY,
-                            idx.toString(),
-                            option.name,
-                            Emoji.fromUnicode(option.emoji)
-                        )
-                    }
-                }
-            }
+            components += resultCalculator.calculateResults(this@Quiz)
         }.await()
+
+        runningActivities.remove(channel.idLong)
     }
 
     override suspend fun processButtonClick(event: ButtonInteractionEvent) {
@@ -172,4 +126,59 @@ class Quiz (
     }
 
     override suspend fun processMessageReply(message: Message) {}
+
+    private fun startContainer() = Container {
+        accentColor = Color(quizData.accentColor)
+        text("**${player.effectiveName}**\n## ${quizData.emoji} ${quizData.title}\n${quizData.description}")
+    }
+
+    private fun questionContainer(answerIndex: Int?, attachment:(FileUpload) -> Unit) = Container {
+        accentColor = Color(quizData.accentColor)
+        text(content = "### ${quizData.emoji} ${quizData.questionName} Nr. ${currentIndex + 1}")
+
+        val imagePath = shuffledQuestions[currentIndex].imagePath
+        if (imagePath != null) {
+            mediaGallery {
+                item("attachment://$imagePath")
+
+                val imageFile = loadResourceFile(imagePath)?: error("Failed to load image file $imagePath")
+                attachment(FileUpload.fromData(imageFile, imagePath))
+            }
+        }
+        text(shuffledQuestions[currentIndex].textContent)
+
+        actionRow {
+            shuffledQuestions[currentIndex].options.forEachIndexed { idx, option ->
+                button(
+                    if (answerIndex == idx) ButtonStyle.PRIMARY else ButtonStyle.SECONDARY,
+                    idx.toString(),
+                    option.name,
+                    Emoji.fromUnicode(option.emoji),
+                    answerIndex != null
+                )
+            }
+        }
+
+        if (revealGuildMemberAnswers && answerIndex != null) {
+            text(
+                buildString {
+                    val questionId = shuffledQuestions[currentIndex].id
+                    shuffledQuestions[currentIndex].options.forEachIndexed { idx, option ->
+                        val members = guildMemberAnswers.filter { it.value.answers[questionId] == idx }.keys
+
+                        append("\n**${option.emoji} ${option.name}**\n")
+
+                        members.forEach { append("<@$it>\n")}
+                    }
+                }
+            )
+        }
+    }
+
+    private suspend fun sendNextQuestion() {
+        lastQuestionMessage = channel.send(mentions = Mentions.none()) {
+            useComponentsV2 = true
+            components += questionContainer(null) { fileUpload -> files += fileUpload }
+        }.await()
+    }
 }

@@ -12,6 +12,7 @@ import org.slf4j.LoggerFactory
 import robort.quiz.requestArtQuizCommand
 import robort.quiz.requestBigQuestionsQuizCommand
 import robort.quiz.requestComputerScienceQuizCommand
+import robort.quiz.requestPoliticalCompassQuizCommand
 import robort.utils.animatePanda
 import robort.utils.askNaturalStupidityCommand
 import robort.utils.askOracleCommand
@@ -66,6 +67,11 @@ suspend fun registerCommands(jda: JDA) {
     registerCommandAction.addCommands(Commands.slash("isitart", "Endlich eintscheiden was Kunst ist und was weg kann"))
     jda.onSlashCommand("isitart") {
         requestArtQuizCommand(it)
+    }
+
+    registerCommandAction.addCommands(Commands.slash("compass", "Der aller-akkurateste Polische Kompass Test"))
+    jda.onSlashCommand("compass") {
+        requestPoliticalCompassQuizCommand(it)
     }
 
     registerCommandAction.await()
