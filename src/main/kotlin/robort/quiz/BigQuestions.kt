@@ -17,9 +17,8 @@ suspend fun requestBigQuestionsQuizCommand(interaction: SlashCommandInteractionE
         interaction.reply(":no_entry: In diesem Kanal läuft noch eine andere Aktivität. Warte kurz oder nutze einen anderen Kanal.").setEphemeral(true).await()
         return
     }
-
-    val quiz = Quiz(bigQuestionsQuizData, interaction.channel, interaction.user, BigQuestionsQuizResultCalculator, true)
-    runningActivities[quiz.channel.idLong] = quiz
+    
+    val quiz = Quiz(bigQuestionsQuizData, interaction.channel, interaction.user, BigQuestionsQuizResultCalculator, interaction.guild, QuizType.BIG_QUESTIONS)
     quiz.startQuizCommand(interaction)
 }
 

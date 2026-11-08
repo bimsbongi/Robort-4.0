@@ -21,8 +21,7 @@ suspend fun requestPoliticalCompassQuizCommand(interaction: SlashCommandInteract
         return
     }
 
-    val quiz = Quiz(politicalCompassQuizData, interaction.channel, interaction.user, PoliticalCompassResultCalculator, false)
-    runningActivities[quiz.channel.idLong] = quiz
+    val quiz = Quiz(politicalCompassQuizData, interaction.channel, interaction.user, PoliticalCompassResultCalculator, null, QuizType.COMPASS)
     quiz.startQuizCommand(interaction)
 }
 
@@ -59,8 +58,6 @@ data object PoliticalCompassResultCalculator : QuizResultCalculator {
             repeat(7) { yRaw ->
                 val x = xRaw - 3
                 val y = yRaw - 3
-                println("replacing [$x, $y]")
-                println("star at $xPoint, $yPoint")
                 compass = compass.replace("[$x, $y]", if (x == xPoint && y == yPoint) ":star:" else compassBaseColor(x, y))
             }
         }

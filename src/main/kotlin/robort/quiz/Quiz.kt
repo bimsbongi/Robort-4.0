@@ -2,15 +2,16 @@ package robort.quiz
 
 import dev.minn.jda.ktx.coroutines.await
 import dev.minn.jda.ktx.interactions.components.Container
-import dev.minn.jda.ktx.messages.MentionConfig
 import dev.minn.jda.ktx.messages.Mentions
 import dev.minn.jda.ktx.messages.edit
 import dev.minn.jda.ktx.messages.reply_
 import dev.minn.jda.ktx.messages.send
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.groupBy
 import kotlinx.serialization.Serializable
 import net.dv8tion.jda.api.components.buttons.ButtonStyle
 import net.dv8tion.jda.api.components.container.Container
+import net.dv8tion.jda.api.entities.Guild
 import net.dv8tion.jda.api.entities.Message
 import net.dv8tion.jda.api.entities.User
 import net.dv8tion.jda.api.entities.channel.middleman.MessageChannel
@@ -18,7 +19,14 @@ import net.dv8tion.jda.api.entities.emoji.Emoji
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent
 import net.dv8tion.jda.api.events.interaction.component.ButtonInteractionEvent
 import net.dv8tion.jda.api.utils.FileUpload
+import org.jetbrains.exposed.v1.core.and
+import org.jetbrains.exposed.v1.core.eq
+import org.jetbrains.exposed.v1.core.inList
+import org.jetbrains.exposed.v1.r2dbc.batchUpsert
+import org.jetbrains.exposed.v1.r2dbc.selectAll
+import org.jetbrains.exposed.v1.r2dbc.transactions.suspendTransaction
 import robort.ChannelActivity
+import robort.QuizAnswers
 import robort.runningActivities
 import robort.utils.loadResourceFile
 import java.awt.Color
@@ -26,6 +34,13 @@ import kotlin.time.Duration.Companion.seconds
 
 sealed interface QuizResultCalculator {
     fun calculateResults(quiz: Quiz): Container
+}
+
+enum class QuizType {
+    ART,
+    BIG_QUESTIONS,
+    COMPASS,
+    COMPUTER_SCIENCE;
 }
 
 @Serializable
@@ -62,8 +77,8 @@ class Quiz (
     override val channel: MessageChannel,
     val player: User,
     val resultCalculator: QuizResultCalculator,
-    val revealGuildMemberAnswers: Boolean = false,
-    val guildMemberAnswers: MutableMap<Long, UserQuizAnswer> = mutableMapOf()
+    val answerProvidingGuild: Guild?,
+    val quizType: QuizType,
 ) : ChannelActivity {
     var currentIndex = 0
     var lastQuestionMessage: Message? = null
@@ -71,8 +86,12 @@ class Quiz (
     var weightSum = 0
     var secondaryWeightSum = 0
     val shuffledQuestions = quizData.questions.shuffled()
+    val guildMemberAnswers: MutableMap<Long, UserQuizAnswer> = mutableMapOf()
 
     suspend fun startQuizCommand(interaction: SlashCommandInteractionEvent) {
+        if (answerProvidingGuild != null) { guildMemberAnswers.putAll(loadGuildMemberAnswers(answerProvidingGuild, quizType)) }
+        runningActivities[channel.idLong] = this
+
         interaction.reply_ {
             useComponentsV2 = true
             components += startContainer()
@@ -82,6 +101,9 @@ class Quiz (
     }
 
     suspend fun startQuizRemote() {
+        if (answerProvidingGuild != null) { guildMemberAnswers.putAll(loadGuildMemberAnswers(answerProvidingGuild, quizType)) }
+        runningActivities[channel.idLong] = this
+
         channel.send {
             useComponentsV2 = true
             components += startContainer()
@@ -117,6 +139,7 @@ class Quiz (
             components += resultCalculator.calculateResults(this@Quiz)
         }.await()
 
+        saveQuizAnswers()
         runningActivities.remove(channel.idLong)
     }
 
@@ -159,7 +182,7 @@ class Quiz (
             }
         }
 
-        if (revealGuildMemberAnswers && answerIndex != null) {
+        if (answerProvidingGuild != null && answerIndex != null) {
             text(
                 buildString {
                     val questionId = shuffledQuestions[currentIndex].id
@@ -172,6 +195,29 @@ class Quiz (
                     }
                 }
             )
+        }
+    }
+
+    private suspend fun loadGuildMemberAnswers(guild: Guild, type: QuizType) = suspendTransaction {
+        val memberIds = guild.loadMembers().await().map { it.idLong }
+
+        return@suspendTransaction QuizAnswers.selectAll()
+            .where { QuizAnswers.userId.inList(memberIds) and (QuizAnswers.type eq type) }
+            .groupBy { it[QuizAnswers.userId] }
+            .toList().associate { (userId, answers) ->
+                val answerMap = buildMap {
+                    answers.forEach { put(it[QuizAnswers.questionId], it[QuizAnswers.answerId]) }
+                }
+                userId to UserQuizAnswer(answerMap)
+            }.toMutableMap()
+    }
+
+    private suspend fun saveQuizAnswers() = suspendTransaction {
+        QuizAnswers.batchUpsert(answers.entries) {
+            this[QuizAnswers.type] = quizType
+            this[QuizAnswers.userId] = player.idLong
+            this[QuizAnswers.questionId] = it.key
+            this[QuizAnswers.answerId] = it.value
         }
     }
 

@@ -17,8 +17,7 @@ suspend fun requestArtQuizCommand(interaction: SlashCommandInteractionEvent) {
         return
     }
 
-    val quiz = Quiz(artQuizData, interaction.channel, interaction.user, ArtQuizResultCalculator, true)
-    runningActivities[quiz.channel.idLong] = quiz
+    val quiz = Quiz(artQuizData, interaction.channel, interaction.user, ArtQuizResultCalculator, null, QuizType.ART)
     quiz.startQuizCommand(interaction)
 }
 

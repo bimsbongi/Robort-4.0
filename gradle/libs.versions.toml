@@ -18,6 +18,7 @@ kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", versi
 
 [libraries]
 exposed-core = { module = "org.jetbrains.exposed:exposed-core", version.ref = "exposed" }
+exposed-r2dbc = { module = "org.jetbrains.exposed:exposed-r2dbc", version.ref = "exposed" }
 exposed-json = { module = "org.jetbrains.exposed:exposed-json", version.ref = "exposed" }
 jda = { module = "net.dv8tion:JDA", version.ref = "jda" }
 jda-ktx = { module = "club.minnced:jda-ktx", version.ref = "jda-ktx" }
@@ -34,6 +35,7 @@ logback = { module = "ch.qos.logback:logback-classic", version.ref = "logback"}
 database = [
     "exposed-core",
     "exposed-json",
+    "exposed-r2dbc",
     "r2dbc-pool",
     "r2dbc-postgresql",
 ]

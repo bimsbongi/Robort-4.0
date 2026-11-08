@@ -20,8 +20,7 @@ suspend fun requestComputerScienceQuizCommand(interaction: SlashCommandInteracti
         return
     }
 
-    val quiz = Quiz(computerScienceQuizData, interaction.channel, interaction.user, ComputerScienceQuizResultCalculator, false)
-    runningActivities[quiz.channel.idLong] = quiz
+    val quiz = Quiz(computerScienceQuizData, interaction.channel, interaction.user, ComputerScienceQuizResultCalculator, null, QuizType.COMPUTER_SCIENCE)
     quiz.startQuizCommand(interaction)
 }
 
