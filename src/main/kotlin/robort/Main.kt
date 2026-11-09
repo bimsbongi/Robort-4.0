@@ -2,16 +2,17 @@ package robort
 
 import dev.minn.jda.ktx.coroutines.await
 import dev.minn.jda.ktx.events.listener
-import dev.minn.jda.ktx.interactions.commands.updateCommands
 import dev.minn.jda.ktx.jdabuilder.default
 import dev.minn.jda.ktx.jdabuilder.intents
-import net.dv8tion.jda.api.JDA
+import net.dv8tion.jda.api.events.interaction.ModalInteractionEvent
 import net.dv8tion.jda.api.events.interaction.component.ButtonInteractionEvent
-import net.dv8tion.jda.api.events.message.MessageReceivedEvent
+import net.dv8tion.jda.api.events.interaction.component.StringSelectInteractionEvent
 import net.dv8tion.jda.api.interactions.commands.OptionType
 import net.dv8tion.jda.api.interactions.commands.build.Commands
 import net.dv8tion.jda.api.requests.GatewayIntent
 import org.slf4j.LoggerFactory
+import robort.poll.listenForPollModalSubmission
+import robort.poll.startPollCommand
 import robort.quiz.requestArtQuizCommand
 import robort.quiz.requestBigQuestionsQuizCommand
 import robort.quiz.requestComputerScienceQuizCommand
@@ -83,6 +84,11 @@ suspend fun registerCommands() {
         requestPoliticalCompassQuizCommand(it)
     }
 
+    registerCommandAction.addCommands(Commands.slash("poll", "Umfrage mit Ranked-Pairs methode abhalten"))
+    jda.onSlashCommand("poll") {
+        startPollCommand(it)
+    }
+
     registerCommandAction.addCommands( Commands.slash("aura", "Aura von Leuten verbuchen/abrufen")
         .addOption(OptionType.USER, "user", "User", true)
         .addOption(OptionType.NUMBER, "amount", "Betrag", false)
@@ -103,12 +109,33 @@ private suspend fun registerDatabase() {
 
 private fun registerListeners() {
     jda.listener<ButtonInteractionEvent> { event ->
-        runningActivities.forEach { (channelId, activity) ->
+        runningChannelActivities.forEach { (channelId, activity) ->
             if (channelId != event.interaction.channel.idLong) return@forEach
-
             activity.processButtonClick(event)
         }
-        event.interaction.deferEdit().await()
+        runningMessageActivities.forEach { (messageId, activity) ->
+            if (messageId != event.interaction.messageIdLong) return@forEach
+            activity.processButtonClick(event)
+        }
+
+        if (!event.interaction.isAcknowledged) event.interaction.deferEdit().await()
+    }
+
+    jda.listener<ModalInteractionEvent> { event ->
+        listenForPollModalSubmission(event)
+    }
+
+    jda.listener<StringSelectInteractionEvent> { event ->
+        runningChannelActivities.forEach { (channelId, activity) ->
+            if (channelId != event.interaction.channel.idLong) return@forEach
+            activity.processStringSelect(event)
+        }
+        runningMessageActivities.forEach { (messageId, activity) ->
+            if (messageId != event.interaction.messageIdLong) return@forEach
+            activity.processStringSelect(event)
+        }
+
+        if (!event.interaction.isAcknowledged) event.interaction.deferEdit().await()
     }
 
     mainLogger.info("Registered all listeners")

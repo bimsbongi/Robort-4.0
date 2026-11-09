@@ -2,10 +2,9 @@ package robort.quiz
 
 import dev.minn.jda.ktx.coroutines.await
 import dev.minn.jda.ktx.interactions.components.Container
-import dev.minn.jda.ktx.messages.Embed
 import kotlinx.serialization.json.Json
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent
-import robort.runningActivities
+import robort.runningChannelActivities
 import robort.utils.loadResourceFile
 import java.awt.Color
 
@@ -13,11 +12,11 @@ private val bigQuestionsQuizDataFile = loadResourceFile("/Quiz/bigQuestions.json
 val bigQuestionsQuizData = Json.decodeFromString<QuizData>(bigQuestionsQuizDataFile.readText())
 
 suspend fun requestBigQuestionsQuizCommand(interaction: SlashCommandInteractionEvent) {
-    if (runningActivities.containsKey(interaction.channel.idLong)) {
+    if (runningChannelActivities.containsKey(interaction.channel.idLong)) {
         interaction.reply(":no_entry: In diesem Kanal läuft noch eine andere Aktivität. Warte kurz oder nutze einen anderen Kanal.").setEphemeral(true).await()
         return
     }
-    
+
     val quiz = Quiz(bigQuestionsQuizData, interaction.channel, interaction.user, BigQuestionsQuizResultCalculator, interaction.guild, QuizType.BIG_QUESTIONS)
     quiz.startQuizCommand(interaction)
 }

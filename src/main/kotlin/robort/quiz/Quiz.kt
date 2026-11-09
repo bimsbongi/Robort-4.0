@@ -27,7 +27,7 @@ import org.jetbrains.exposed.v1.r2dbc.selectAll
 import org.jetbrains.exposed.v1.r2dbc.transactions.suspendTransaction
 import robort.ChannelActivity
 import robort.QuizAnswers
-import robort.runningActivities
+import robort.runningChannelActivities
 import robort.utils.loadResourceFile
 import java.awt.Color
 import kotlin.time.Duration.Companion.seconds
@@ -74,7 +74,7 @@ data class UserQuizAnswer(val answers: Map<Int, Int>)
 
 class Quiz (
     val quizData: QuizData,
-    override val channel: MessageChannel,
+    val channel: MessageChannel,
     val player: User,
     val resultCalculator: QuizResultCalculator,
     val answerProvidingGuild: Guild?,
@@ -90,7 +90,7 @@ class Quiz (
 
     suspend fun startQuizCommand(interaction: SlashCommandInteractionEvent) {
         if (answerProvidingGuild != null) { guildMemberAnswers.putAll(loadGuildMemberAnswers(answerProvidingGuild, quizType)) }
-        runningActivities[channel.idLong] = this
+        runningChannelActivities[channel.idLong] = this
 
         interaction.reply_ {
             useComponentsV2 = true
@@ -102,7 +102,7 @@ class Quiz (
 
     suspend fun startQuizRemote() {
         if (answerProvidingGuild != null) { guildMemberAnswers.putAll(loadGuildMemberAnswers(answerProvidingGuild, quizType)) }
-        runningActivities[channel.idLong] = this
+        runningChannelActivities[channel.idLong] = this
 
         channel.send {
             useComponentsV2 = true
@@ -140,15 +140,13 @@ class Quiz (
         }.await()
 
         saveQuizAnswers()
-        runningActivities.remove(channel.idLong)
+        runningChannelActivities.remove(channel.idLong)
     }
 
     override suspend fun processButtonClick(event: ButtonInteractionEvent) {
         if (event.message.id == lastQuestionMessage?.id && event.user.idLong == player.idLong)
             processAnswer(event.customId.toInt())
     }
-
-    override suspend fun processMessageReply(message: Message) {}
 
     private fun startContainer() = Container {
         accentColor = Color(quizData.accentColor)

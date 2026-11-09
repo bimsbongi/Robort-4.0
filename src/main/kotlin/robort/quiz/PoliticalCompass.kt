@@ -3,20 +3,17 @@ package robort.quiz
 
 import dev.minn.jda.ktx.coroutines.await
 import dev.minn.jda.ktx.interactions.components.Container
-import dev.minn.jda.ktx.messages.Embed
 import kotlinx.serialization.json.Json
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent
-import robort.runningActivities
+import robort.runningChannelActivities
 import robort.utils.loadResourceFile
 import java.awt.Color
-import kotlin.math.max
-import kotlin.math.min
 
 private val politicalCompassQuizDataFile = loadResourceFile("/Quiz/politicalCompass.json")?: error("Could not load Quiz/politicalCompass.json")
 val politicalCompassQuizData = Json.decodeFromString<QuizData>(politicalCompassQuizDataFile.readText())
 
 suspend fun requestPoliticalCompassQuizCommand(interaction: SlashCommandInteractionEvent) {
-    if (runningActivities.containsKey(interaction.channel.idLong)) {
+    if (runningChannelActivities.containsKey(interaction.channel.idLong)) {
         interaction.reply(":no_entry: In diesem Kanal läuft noch eine andere Aktivität. Warte kurz oder nutze einen anderen Kanal.").setEphemeral(true).await()
         return
     }
