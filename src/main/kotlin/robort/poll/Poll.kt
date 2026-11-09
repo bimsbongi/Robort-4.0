@@ -8,10 +8,12 @@ import dev.minn.jda.ktx.interactions.components.Modal
 import dev.minn.jda.ktx.interactions.components.SelectOption
 import dev.minn.jda.ktx.interactions.components.StringSelectMenu
 import dev.minn.jda.ktx.interactions.components.TextInput
+import dev.minn.jda.ktx.messages.edit
 import dev.minn.jda.ktx.messages.send
 import kotlinx.coroutines.delay
 import net.dv8tion.jda.api.components.buttons.ButtonStyle
 import net.dv8tion.jda.api.components.textinput.TextInputStyle
+import net.dv8tion.jda.api.entities.Message
 import net.dv8tion.jda.api.entities.User
 import net.dv8tion.jda.api.entities.channel.middleman.MessageChannel
 import net.dv8tion.jda.api.entities.emoji.Emoji
@@ -23,6 +25,7 @@ import robort.MessageActivity
 import robort.jda
 import robort.runningMessageActivities
 import java.awt.Color
+import kotlin.math.max
 import kotlin.time.Duration.Companion.minutes
 
 suspend fun listenForPollModalSubmission(event: ModalInteractionEvent) {
@@ -31,18 +34,23 @@ suspend fun listenForPollModalSubmission(event: ModalInteractionEvent) {
 }
 
 suspend fun createPollFromModal(event: ModalInteractionEvent) {
-    event.deferEdit().await()
     val question = event.getValue("poll_setup_question")?.asString?: error("Cannot find poll_setup_question")
     val optionsRaw = event.getValue("poll_setup_options")?.asString?: error("Cannot find poll_setup_options")
     val options = optionsRaw.split("\n")
     val duration = event.getValue("poll_setup_time")?.asStringList?.firstOrNull()?.toIntOrNull()?: error("Cannot find poll_setup_time")
     val channel = jda.getChannel<MessageChannel>(event.interaction.modalId.split(":").last())?: error("Cannot find channel for poll")
 
+    if (options.size < 2) {
+        event.reply(":no_entry: Es müssen mindestens zwei Optionnen zur Wahl stehen").setEphemeral(true).await()
+        return
+    }
+
+    event.deferEdit().await()
+
     val poll = Poll(question, options, duration, channel, event.user)
-    val message = poll.sendPollMessage()
-    runningMessageActivities[message.idLong] = poll
+    poll.sendPollMessage()
+    runningMessageActivities[poll.message!!.idLong] = poll
     poll.waitToConclude()
-    runningMessageActivities.remove(message.idLong)
 }
 
 fun pollSetupModal(targetChannelId: Long) = Modal(title = "Umfrage starten", id = "poll_setup:$targetChannelId") {
@@ -80,6 +88,7 @@ suspend fun startPollCommand(interaction: SlashCommandInteractionEvent) {
     interaction.replyModal(pollSetupModal(interaction.channel.idLong)).await()
 }
 
+val pollColor = Color(0x4daaff)
 
 class Poll(
     val question: String,
@@ -92,42 +101,104 @@ class Poll(
     private val cachedResponses = mutableMapOf<Long, UserRatings>()
     private val submittedResponses = mutableMapOf<Long, UserRatings>()
 
-    suspend fun sendPollMessage() = channel.send {
-        useComponentsV2 = true
-        components += Container {
-            accentColor = Color(0x4daaff)
+    var message: Message? = null
 
-            text("**${creator.effectiveName}**\n## \uD83D\uDDF3\uFE0F Umfrage\n### ${question}\n <t:${System.currentTimeMillis()/1000 + duration * 60}>")
-
-            options.forEachIndexed { index, option ->
-                text("**${index + 1}**. $option")
-                actionRow {
-                    stringSelectMenu(
-                        customId = "poll_option:${index}",
-                        options = listOf(
-                            SelectOption("5 Sterne", value = "5", emoji = Emoji.fromUnicode("⭐")),
-                            SelectOption("4 Sterne", value = "4", emoji = Emoji.fromUnicode("⭐")),
-                            SelectOption("3 Sterne", value = "3", emoji = Emoji.fromUnicode("⭐")),
-                            SelectOption("2 Sterne", value = "2", emoji = Emoji.fromUnicode("⭐")),
-                            SelectOption("1 Stern", value = "1", emoji = Emoji.fromUnicode("⭐")),
-                        )
-                    )
-                }
-            }
-
-            actionRow {
-                button(ButtonStyle.PRIMARY, "poll_submit", "", Emoji.fromUnicode("\uD83D\uDCE9"))
-            }
-        }
-    }.await()
+    suspend fun sendPollMessage() {
+        message = channel.send {
+            useComponentsV2 = true
+            components += pollContainer(true)
+        }.await()
+    }
 
     suspend fun waitToConclude() {
         delay(duration.minutes)
         conclude()
     }
 
-    private fun conclude() {
+    private fun pollContainer(active: Boolean) = Container {
+        accentColor = pollColor
 
+        text("**${creator.effectiveName}**\n## \uD83D\uDDF3\uFE0F Umfrage\n### ${question}\n")
+
+        options.forEachIndexed { index, option ->
+            text("**${index + 1}**. $option")
+            actionRow {
+                stringSelectMenu(
+                    customId = "poll_option:${index}",
+                    options = listOf(
+                        SelectOption("5 Sterne", value = "5", emoji = Emoji.fromUnicode("⭐")),
+                        SelectOption("4 Sterne", value = "4", emoji = Emoji.fromUnicode("⭐")),
+                        SelectOption("3 Sterne", value = "3", emoji = Emoji.fromUnicode("⭐")),
+                        SelectOption("2 Sterne", value = "2", emoji = Emoji.fromUnicode("⭐")),
+                        SelectOption("1 Stern", value = "1", emoji = Emoji.fromUnicode("⭐")),
+                    ),
+                    disabled = !active
+                )
+            }
+        }
+
+        actionRow {
+            button(ButtonStyle.PRIMARY, "poll_submit", "", Emoji.fromUnicode("\uD83D\uDCE9"), !active)
+        }
+
+        text(if (active) "Umfrage endet <t:${System.currentTimeMillis() / 1000 + duration * 60}:R>" else "*Umfrage ist beendet*")
+    }
+
+    private suspend fun conclude() {
+        val (winnerIds, usedMatchups) = evaluate()
+
+        val winnerNames = winnerIds.map { id -> options[id] }
+        val matchupsText = usedMatchups.joinToString("\n") { "${options[it.winnerId]} **>** ${options[it.looserId]}" }
+
+        message?.edit {
+            useComponentsV2 = true
+            components += pollContainer(false)
+        }?.await()
+
+        channel.send {
+            useComponentsV2 = true
+            components += Container {
+                accentColor = pollColor
+                text("## 🗳️ Ergebnis\n### ${winnerNames.joinToString(", ")}\n---\n$matchupsText")
+            }
+        }.setMessageReference(message?.idLong?: 0L).await()
+
+        runningMessageActivities.remove(message?.idLong)
+    }
+
+    private fun evaluate(): Pair<List<Int>, List<OptionMatchup>> {
+        val matchups = createMatchups()
+        val sortedMatchups = matchups.filter { it.winningPercent > 0.5 }.sortedByDescending { it.winningPercent }
+        val optionTally = List(options.size) { i -> Option(i) }
+        val usedMatchups = mutableListOf<OptionMatchup>()
+
+        sortedMatchups.forEach { matchup ->
+            val winner = optionTally[matchup.winnerId]
+            val looser = optionTally[matchup.looserId]
+
+            if (winner.inferiorTo.contains(looser) || looser.inferiorTo.contains(winner)) return@forEach
+
+            winner.superiorTo.add(looser)
+            winner.superiorTo.addAll(looser.superiorTo)
+
+            looser.inferiorTo.add(winner)
+            looser.inferiorTo.addAll(winner.inferiorTo)
+
+            usedMatchups.add(matchup)
+        }
+
+        return optionTally.filter { it.inferiorTo.isEmpty() }.map { it.id } to usedMatchups
+    }
+
+    private fun createMatchups() = buildList {
+        for (a in options.indices) {
+            for (b in a + 1 until options.size) {
+                val aVotes = submittedResponses.values.count { (it.ratings[a]?: 0) > (it.ratings[b]?: 0) }
+                val bVotes = submittedResponses.values.count { (it.ratings[a]?: 0) < (it.ratings[b]?: 0) }
+
+                add(OptionMatchup(a, b, aVotes, bVotes))
+            }
+        }
     }
 
     override suspend fun processButtonClick(event: ButtonInteractionEvent) {
@@ -147,7 +218,20 @@ class Poll(
 
         cachedResponses.getOrPut(userId) { UserRatings(mutableMapOf()) }.ratings[optionId] = rating
     }
-
 }
 
+private class Option (val id: Int) {
+    val inferiorTo = mutableSetOf<Option>()
+    val superiorTo = mutableSetOf<Option>()
+}
 
+private data class OptionMatchup(val firstId: Int, val secondId: Int, val firstPreferences: Int, val secondPreferences: Int) {
+    val winningPercent =
+        if (firstPreferences + secondPreferences == 0)
+            0.5
+        else
+            max(firstPreferences, secondPreferences) / (firstPreferences + secondPreferences).toDouble()
+
+    val winnerId = if (firstPreferences > secondPreferences) firstId else secondId
+    val looserId = if (firstPreferences <= secondPreferences) firstId else secondId
+}
