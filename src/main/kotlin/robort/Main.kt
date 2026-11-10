@@ -22,6 +22,8 @@ import robort.utils.animatePanda
 import robort.utils.askNaturalStupidityCommand
 import robort.utils.askOracleCommand
 import robort.utils.bookAuraCommand
+import robort.game.challengeRockPaperScissorsCommand
+import robort.game.challengeTicTacToeCommand
 import robort.utils.onSlashCommand
 import robort.utils.showProfileColorCommand
 
@@ -96,6 +98,18 @@ suspend fun registerCommands() {
         .addOption(OptionType.STRING, "reason", "Grund der Verbuchung", false))
     jda.onSlashCommand("aura") {
         bookAuraCommand(it)
+    }
+
+    registerCommandAction.addCommands(Commands.slash("ssp", "Jemanden zu Schere-Stein-Papier herausfordern")
+        .addOption(OptionType.USER, "opponent", "Gegner", true))
+    jda.onSlashCommand("ssp") {
+        challengeRockPaperScissorsCommand(it)
+    }
+
+    registerCommandAction.addCommands(Commands.slash("ttt", "Jemanden zu Tic-Tac-Toe herausfordern")
+        .addOption(OptionType.USER, "opponent", "Gegner", true))
+    jda.onSlashCommand("ttt") {
+        challengeTicTacToeCommand(it)
     }
 
     registerCommandAction.await()
