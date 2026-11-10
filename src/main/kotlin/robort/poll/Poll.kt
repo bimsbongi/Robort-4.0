@@ -164,7 +164,7 @@ class Poll(
             useComponentsV2 = true
             components += Container {
                 accentColor = pollColor
-                text("## 🗳️ Ergebnis\n### ${winnerNames.joinToString(", ")}\n---\n$matchupsText")
+                text("## 🗳️ Ergebnis\n### ${winnerNames.joinToString(", ")}\n---\n$matchupsText\n---\n${submittedResponses.size} Stimme(n)")
             }
         }.setMessageReference(message?.idLong?: 0L).await()
 
