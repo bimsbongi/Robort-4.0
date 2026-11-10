@@ -9,6 +9,7 @@ import dev.minn.jda.ktx.interactions.components.SelectOption
 import dev.minn.jda.ktx.interactions.components.StringSelectMenu
 import dev.minn.jda.ktx.interactions.components.TextInput
 import dev.minn.jda.ktx.messages.edit
+import dev.minn.jda.ktx.messages.reply_
 import dev.minn.jda.ktx.messages.send
 import kotlinx.coroutines.delay
 import net.dv8tion.jda.api.components.buttons.ButtonStyle
@@ -139,6 +140,7 @@ class Poll(
 
         actionRow {
             button(ButtonStyle.PRIMARY, "poll_submit", "", Emoji.fromUnicode("\uD83D\uDCE9"), !active)
+            button(ButtonStyle.SECONDARY, "poll_info", "Infos", Emoji.fromUnicode("\uD83D\uDCDA"))
         }
 
         text(if (active) "Umfrage endet <t:${System.currentTimeMillis() / 1000 + duration * 60}:R>" else "*Umfrage ist beendet*")
@@ -168,7 +170,7 @@ class Poll(
 
     private fun evaluate(): Pair<List<Int>, List<OptionMatchup>> {
         val matchups = createMatchups()
-        val sortedMatchups = matchups.filter { it.winningPercent > 0.5 }.sortedByDescending { it.winningPercent }
+        val sortedMatchups = matchups.filter { it.winningPercent > 0.5 }.shuffled().sortedByDescending { it.winningPercent }
         val optionTally = List(options.size) { i -> Option(i) }
         val usedMatchups = mutableListOf<OptionMatchup>()
 
@@ -202,6 +204,8 @@ class Poll(
     }
 
     override suspend fun processButtonClick(event: ButtonInteractionEvent) {
+        if (event.customId != "poll_submit") return
+
         if (event.user.idLong in submittedResponses.keys) {
             event.reply(":no_entry: Du hast auf diese Umfrage bereits geantwortet").setEphemeral(true).await()
             return
@@ -234,4 +238,33 @@ private data class OptionMatchup(val firstId: Int, val secondId: Int, val firstP
 
     val winnerId = if (firstPreferences > secondPreferences) firstId else secondId
     val looserId = if (firstPreferences <= secondPreferences) firstId else secondId
+}
+
+suspend fun sendPollInfo(event: ButtonInteractionEvent) {
+    event.reply_ {
+        useComponentsV2 = true
+        components += Container {
+            accentColor = pollColor
+
+            text (
+                """
+                    # :books: Umfrage Verfahren
+                    ### Prinzip
+                    Alle Optionen werden paarweise direkt verglichen.
+                    Anhand der Sterne-Bewertungen wird jeweils eine Stichwahl ausgewertet.
+                    Aus den Stichwahl-Ergebnissen wird das Gesamtergebnis ermittelt.
+                    
+                    ### Details
+                    - Eindeutigere Stichwahl-Ergebnisse werden zuerst abgearbeitet
+                    - Unter gleich eideutigen Ergebnissen ist die Reihenfolge zufällig
+                    - Wenn ein Kreislauf (Schere-Stein-Papier Prinzip) entsteht wird das letzte (uneindeutigere) Ergebnis ignoriert
+                    - Nicht-Bewerten einer Option zählt als "0 Sterne"
+                """.trimIndent()
+            )
+
+            actionRow {
+                linkButton("https://en.wikipedia.org/wiki/Ranked_pairs", "Wikipedia Artikel")
+            }
+        }
+    }.setEphemeral(true).await()
 }

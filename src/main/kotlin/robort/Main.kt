@@ -12,6 +12,7 @@ import net.dv8tion.jda.api.interactions.commands.build.Commands
 import net.dv8tion.jda.api.requests.GatewayIntent
 import org.slf4j.LoggerFactory
 import robort.poll.listenForPollModalSubmission
+import robort.poll.sendPollInfo
 import robort.poll.startPollCommand
 import robort.quiz.requestArtQuizCommand
 import robort.quiz.requestBigQuestionsQuizCommand
@@ -117,6 +118,8 @@ private fun registerListeners() {
             if (messageId != event.interaction.messageIdLong) return@forEach
             activity.processButtonClick(event)
         }
+
+        if (event.customId == "poll_info") sendPollInfo(event)
 
         if (!event.interaction.isAcknowledged) event.interaction.deferEdit().await()
     }
