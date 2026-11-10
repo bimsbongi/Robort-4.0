@@ -103,6 +103,7 @@ class Poll(
     private val submittedResponses = mutableMapOf<Long, UserRatings>()
 
     var message: Message? = null
+    private var concluded = false
 
     suspend fun sendPollMessage() {
         message = channel.send {
@@ -113,7 +114,7 @@ class Poll(
 
     suspend fun waitToConclude() {
         delay(duration.minutes)
-        conclude()
+        if (!concluded) conclude()
     }
 
     private fun pollContainer(active: Boolean) = Container {
@@ -140,15 +141,17 @@ class Poll(
 
         actionRow {
             button(ButtonStyle.PRIMARY, "poll_submit", "", Emoji.fromUnicode("\uD83D\uDCE9"), !active)
-            button(ButtonStyle.SECONDARY, "poll_info", "Infos", Emoji.fromUnicode("\uD83D\uDCDA"))
+            button(ButtonStyle.DANGER, "poll_end", "", Emoji.fromUnicode("\uD83D\uDED1"),!active)
+            button(ButtonStyle.SECONDARY, "poll_info", "", Emoji.fromUnicode("\uD83D\uDCDA"))
         }
 
         text(if (active) "Umfrage endet <t:${System.currentTimeMillis() / 1000 + duration * 60}:R>" else "*Umfrage ist beendet*")
     }
 
     private suspend fun conclude() {
-        val (winnerIds, usedMatchups) = evaluate()
+        concluded = true
 
+        val (winnerIds, usedMatchups) = evaluate()
         val winnerNames = winnerIds.map { id -> options[id] }
         val matchupsText = usedMatchups.joinToString("\n") { "${options[it.winnerId]} **>** ${options[it.looserId]}" }
 
@@ -204,15 +207,22 @@ class Poll(
     }
 
     override suspend fun processButtonClick(event: ButtonInteractionEvent) {
-        if (event.customId != "poll_submit") return
+        if (event.customId == "poll_submit") {
+            if (event.user.idLong in submittedResponses.keys) {
+                event.reply(":no_entry: Du hast auf diese Umfrage bereits geantwortet").setEphemeral(true).await()
+                return
+            }
 
-        if (event.user.idLong in submittedResponses.keys) {
-            event.reply(":no_entry: Du hast auf diese Umfrage bereits geantwortet").setEphemeral(true).await()
-            return
+            submittedResponses[event.user.idLong] = cachedResponses.getOrPut(event.user.idLong) { UserRatings(mutableMapOf()) }.copy()
+            event.reply("\uD83D\uDCE9 Vielen Dank für deine Stimme!").setEphemeral(true).await()
+
+        } else if (event.customId == "poll_end") {
+            if (event.user.idLong != creator.idLong) {
+                event.reply(":no_entry: Nur der Ersteller der Umfrage kann sie abbrechen").setEphemeral(true).await()
+                return
+            }
+            conclude()
         }
-
-        submittedResponses[event.user.idLong] = cachedResponses.getOrPut(event.user.idLong) { UserRatings(mutableMapOf()) }.copy()
-        event.reply("\uD83D\uDCE9 Vielen Dank für deine Stimme!").setEphemeral(true).await()
     }
 
     override suspend fun processStringSelect(event: StringSelectInteractionEvent) {
