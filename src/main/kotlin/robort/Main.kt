@@ -24,6 +24,7 @@ import robort.utils.askOracleCommand
 import robort.utils.bookAuraCommand
 import robort.game.challengeRockPaperScissorsCommand
 import robort.game.challengeTicTacToeCommand
+import robort.menu.setMenuCommand
 import robort.utils.onSlashCommand
 import robort.utils.showProfileColorCommand
 
@@ -90,6 +91,11 @@ suspend fun registerCommands() {
     registerCommandAction.addCommands(Commands.slash("poll", "Umfrage mit Ranked-Pairs methode abhalten"))
     jda.onSlashCommand("poll") {
         startPollCommand(it)
+    }
+
+    registerCommandAction.addCommands(Commands.slash("setmenu", "Hauptmenü für Robort einrichten"))
+    jda.onSlashCommand("setmenu") {
+        setMenuCommand(it)
     }
 
     registerCommandAction.addCommands( Commands.slash("aura", "Aura von Leuten verbuchen/abrufen")

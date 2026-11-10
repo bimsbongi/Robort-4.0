@@ -122,9 +122,8 @@ class TicTacToeGame(
 
     private fun criticalCellsFor(pieceType: CellState) =
         winLines.mapNotNull { winLine ->
-            if ( winLine.count { cellIdx -> boardState[cellIdx] == pieceType } < 2) return@mapNotNull null
-
-            return@mapNotNull winLine.firstOrNull { cellIdx -> !boardState[cellIdx].occupied }
+            if ( winLine.count { cellIdx -> boardState[cellIdx] == pieceType } < 2) null
+            else winLine.firstOrNull { cellIdx -> !boardState[cellIdx].occupied }
         }
 
     private suspend fun makeBotMove() {
