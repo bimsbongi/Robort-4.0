@@ -84,7 +84,7 @@ class Invite (
         text(
             """
                 **${organizer.effectiveName}**
-                ## :loudspeaker: Einladung
+                # :loudspeaker: Einladung
                 ⠀
                 ${originalMessage.contentRaw}
             """.trimIndent()
