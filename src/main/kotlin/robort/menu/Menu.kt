@@ -32,7 +32,7 @@ suspend fun mainMenuContainer(guildId: Long) = Container {
 
     text (
         """
-            # 📜 Hauptemenü 📜
+            # 📜 Hauptmenü 📜
             *Was empfehlen sie, Herr rOBERt?*
             
             ## :video_game: Spiele
