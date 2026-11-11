@@ -36,6 +36,7 @@ suspend fun mainMenuContainer(guildId: Long) = Container {
             *Was empfehlen sie, Herr rOBERt?*
             
             ## :video_game: Spiele
+            
         """.trimIndent()
     )
 
@@ -47,7 +48,7 @@ suspend fun mainMenuContainer(guildId: Long) = Container {
     }
 
     separator(spacing = Separator.Spacing.LARGE, isDivider = false)
-    text ("## :question: Quizze")
+    text ("## :question: Quizze\n")
 
     actionRow {
         button(ButtonStyle.SECONDARY, "compass", "Kompass", Emoji.fromUnicode("\uD83E\uDDED"))
@@ -57,7 +58,7 @@ suspend fun mainMenuContainer(guildId: Long) = Container {
     }
 
     separator(spacing = Separator.Spacing.LARGE, isDivider = false)
-    text ("## :performing_arts: Sonstiges")
+    text ("## :performing_arts: Sonstiges\n")
 
     actionRow {
         button(ButtonStyle.SECONDARY, "nd", "ND", Emoji.fromUnicode("\uD83E\uDD16"))
@@ -67,7 +68,7 @@ suspend fun mainMenuContainer(guildId: Long) = Container {
     }
 
     separator(spacing = Separator.Spacing.LARGE, isDivider = false)
-    text ("## :page_with_curl: Zitate")
+    text ("## :page_with_curl: Zitate\n")
 
     text("Zitate Sammlung: ${channelString(ChannelType.QUOTES)}")
     actionRow {
@@ -79,7 +80,7 @@ suspend fun mainMenuContainer(guildId: Long) = Container {
     }
 
     separator(spacing = Separator.Spacing.LARGE, isDivider = false)
-    text ("## :gear: Einstellungen")
+    text ("## :gear: Einstellungen\n")
 
     text("Einladungen: ${channelString(ChannelType.INVITES)}")
     actionRow {
