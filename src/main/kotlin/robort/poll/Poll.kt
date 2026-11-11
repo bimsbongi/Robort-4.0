@@ -153,7 +153,7 @@ class Poll(
 
         val (winnerIds, usedMatchups) = evaluate()
         val winnerNames = winnerIds.map { id -> options[id] }
-        val matchupsText = usedMatchups.joinToString("\n") { "${options[it.winnerId]} **>** ${options[it.looserId]}" }
+        val matchupsText = usedMatchups.joinToString("\n") { "${options[it.winnerId]} **>** ${options[it.looserId]} (${(it.winningPercent * 100).toInt()}%)" }
 
         message?.edit {
             useComponentsV2 = true
@@ -183,11 +183,11 @@ class Poll(
 
             if (winner.inferiorTo.contains(looser) || looser.inferiorTo.contains(winner)) return@forEach
 
-            winner.superiorTo.add(looser)
-            winner.superiorTo.addAll(looser.superiorTo)
+            val upperGroup = winner.inferiorTo + winner
+            val lowerGroup = looser.superiorTo + looser
 
-            looser.inferiorTo.add(winner)
-            looser.inferiorTo.addAll(winner.inferiorTo)
+            upperGroup.forEach { it.superiorTo.addAll(lowerGroup) }
+            lowerGroup.forEach { it.inferiorTo.addAll(upperGroup) }
 
             usedMatchups.add(matchup)
         }
