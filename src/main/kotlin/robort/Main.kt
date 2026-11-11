@@ -6,6 +6,7 @@ import dev.minn.jda.ktx.jdabuilder.default
 import dev.minn.jda.ktx.jdabuilder.intents
 import net.dv8tion.jda.api.events.interaction.ModalInteractionEvent
 import net.dv8tion.jda.api.events.interaction.component.ButtonInteractionEvent
+import net.dv8tion.jda.api.events.interaction.component.EntitySelectInteractionEvent
 import net.dv8tion.jda.api.events.interaction.component.StringSelectInteractionEvent
 import net.dv8tion.jda.api.interactions.commands.OptionType
 import net.dv8tion.jda.api.interactions.commands.build.Commands
@@ -24,6 +25,7 @@ import robort.utils.askOracleCommand
 import robort.utils.bookAuraCommand
 import robort.game.challengeRockPaperScissorsCommand
 import robort.game.challengeTicTacToeCommand
+import robort.menu.processMainMenuSelect
 import robort.menu.setMenuCommand
 import robort.utils.onSlashCommand
 import robort.utils.showProfileColorCommand
@@ -157,6 +159,12 @@ private fun registerListeners() {
             if (messageId != event.interaction.messageIdLong) return@forEach
             activity.processStringSelect(event)
         }
+
+        if (!event.interaction.isAcknowledged) event.interaction.deferEdit().await()
+    }
+
+    jda.listener<EntitySelectInteractionEvent> { event ->
+        processMainMenuSelect(event)
 
         if (!event.interaction.isAcknowledged) event.interaction.deferEdit().await()
     }

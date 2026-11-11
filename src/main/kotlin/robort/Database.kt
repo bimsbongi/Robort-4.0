@@ -4,6 +4,7 @@ import org.jetbrains.exposed.v1.core.Table
 import org.jetbrains.exposed.v1.r2dbc.R2dbcDatabase
 import org.jetbrains.exposed.v1.r2dbc.SchemaUtils
 import org.jetbrains.exposed.v1.r2dbc.transactions.suspendTransaction
+import robort.Aura.userId
 import robort.menu.ChannelType
 import robort.quiz.QuizType
 import robort.utils.envOrDefault
@@ -73,4 +74,6 @@ object GuildChannelSettings: Table("channel_settings") {
     val guildId = long("guild_id")
     val channelId = long("channel_id")
     val channelType = enumerationByName<ChannelType>("channel_type", 64)
+
+    override val primaryKey = PrimaryKey(guildId, channelType)
 }

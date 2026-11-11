@@ -20,13 +20,13 @@ enum class ChannelType {
 suspend fun getGuildSetChannel(guildId: Long, channelType: ChannelType) = suspendTransaction {
     GuildChannelSettings.selectAll()
         .where { (GuildChannelSettings.guildId eq guildId) and (GuildChannelSettings.channelType eq channelType) }
-        .firstOrNull()?.get(GuildChannelSettings.channelId)?.let { jda.getChannel(it) }
+        .firstOrNull()?.get(GuildChannelSettings.channelId)?.let { if (it != -1L) jda.getChannel(it) else null }
 }
 
-suspend fun saveGuildSetChannel(guildId: Long, channelType: ChannelType, channelId: Long) = suspendTransaction {
+suspend fun saveGuildSetChannel(guildId: Long, channelType: ChannelType, channelId: Long?) = suspendTransaction {
     GuildChannelSettings.upsert {
         it[GuildChannelSettings.guildId] = guildId
         it[GuildChannelSettings.channelType] = channelType
-        it[GuildChannelSettings.channelId] = channelId
+        it[GuildChannelSettings.channelId] = channelId?: -1
     }
 }

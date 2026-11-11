@@ -3,23 +3,33 @@ package robort.menu
 import dev.minn.jda.ktx.coroutines.await
 import dev.minn.jda.ktx.interactions.components.Container
 import dev.minn.jda.ktx.interactions.components.SelectOption
+import dev.minn.jda.ktx.messages.edit
 import dev.minn.jda.ktx.messages.reply_
 import net.dv8tion.jda.api.components.buttons.ButtonStyle
 import net.dv8tion.jda.api.components.selections.EntitySelectMenu
 import net.dv8tion.jda.api.components.separator.Separator
 import net.dv8tion.jda.api.entities.emoji.Emoji
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent
+import net.dv8tion.jda.api.events.interaction.component.EntitySelectInteractionEvent
 import java.awt.Color
 
 suspend fun setMenuCommand(interaction: SlashCommandInteractionEvent) {
+    if (interaction.guild == null) {
+        interaction.reply(":no_entry: Das Menü kann nur auf einem Server eingerichtet werden")
+        return
+    }
+
     interaction.reply_ {
         useComponentsV2 = true
-        components += mainMenuContainer()
+        components += mainMenuContainer(interaction.guild!!.idLong)
     }.await()
 }
 
-fun mainMenuContainer() = Container {
+suspend fun mainMenuContainer(guildId: Long) = Container {
     accentColor = Color(0xe4535d)
+
+    suspend fun channelString(channelType: ChannelType) = getGuildSetChannel(guildId, channelType)?.asMention?: "*Nicht gesetzt*"
+
     text (
         """
             # 📜 Hauptemenü 📜
@@ -59,25 +69,45 @@ fun mainMenuContainer() = Container {
     separator(spacing = Separator.Spacing.LARGE, isDivider = false)
     text ("## :page_with_curl: Zitate")
 
-    text("Zitate Sammlung: PLACEHOLDER")
+    text("Zitate Sammlung: ${channelString(ChannelType.QUOTES)}")
     actionRow {
-        entitySelectMenu("quote_channel", listOf(EntitySelectMenu.SelectTarget.USER), placeholder = "Zitate Sammlung")
+        entitySelectMenu("quote_channel", listOf(EntitySelectMenu.SelectTarget.CHANNEL), valueRange = 0..1, placeholder = "Zitate Sammlung")
     }
-    text("Tägliche Zitate: PLACEHOLDER")
+    text("Tägliche Zitate: ${channelString(ChannelType.DAILY_QUOTES)}")
     actionRow {
-        entitySelectMenu("quote_images_channel", listOf(EntitySelectMenu.SelectTarget.USER), placeholder = "Tägliche Zitate")
+        entitySelectMenu("quote_images_channel", listOf(EntitySelectMenu.SelectTarget.CHANNEL), valueRange = 0..1, placeholder = "Tägliche Zitate")
     }
 
     separator(spacing = Separator.Spacing.LARGE, isDivider = false)
     text ("## :gear: Einstellungen")
 
-    text("Einladungen: PLACEHOLDER")
+    text("Einladungen: ${channelString(ChannelType.INVITES)}")
     actionRow {
-        entitySelectMenu("invite_channel", listOf(EntitySelectMenu.SelectTarget.CHANNEL), placeholder = "Einladungen")
+        entitySelectMenu("invite_channel", listOf(EntitySelectMenu.SelectTarget.CHANNEL), valueRange = 0..1, placeholder = "Einladungen")
     }
 
-    text("Robort's default Kanal: PLACEHOLDER")
+    text("Robort's default Kanal: ${channelString(ChannelType.DEFAULT)}")
     actionRow {
-        entitySelectMenu("bot_channel", listOf(EntitySelectMenu.SelectTarget.CHANNEL), placeholder = "Robort's default Kanal")
+        entitySelectMenu("bot_channel", listOf(EntitySelectMenu.SelectTarget.CHANNEL), valueRange = 0..1, placeholder = "Robort's default Kanal")
+    }
+}
+
+private val selectIdMapping = mapOf(
+    "quote_channel" to ChannelType.QUOTES,
+    "quote_images_channel" to ChannelType.DAILY_QUOTES,
+    "invite_channel" to ChannelType.INVITES,
+    "bot_channel" to ChannelType.DEFAULT,
+)
+
+suspend fun processMainMenuSelect(event: EntitySelectInteractionEvent) {
+    if (event.customId in selectIdMapping.keys) {
+        val channelId = event.interaction.values.firstOrNull()?.idLong
+
+        saveGuildSetChannel(event.guild!!.idLong, selectIdMapping[event.customId]!!, channelId)
+
+        event.message.edit {
+            useComponentsV2 = true
+            components += mainMenuContainer(event.guild!!.idLong)
+        }.await()
     }
 }

@@ -149,6 +149,7 @@ class TicTacToeGame(
     }
 
     private suspend fun advanceGame() {
+        turn += 1
         message!!.edit {
             useComponentsV2 = true
             components += ticTacToeContainer(true)
@@ -161,7 +162,6 @@ class TicTacToeGame(
         } else if (winningStateFor(CellState.OPPONENT_PIECE)) {
             conclude(opponent)
         } else {
-            turn += 1
             if (activePlayer.idLong == jda.selfUser.idLong) makeBotMove()
         }
     }
