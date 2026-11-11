@@ -6,7 +6,6 @@ import dev.minn.jda.ktx.interactions.components.InlineActionRow
 import dev.minn.jda.ktx.messages.edit
 import dev.minn.jda.ktx.messages.reply_
 import dev.minn.jda.ktx.messages.send
-import kotlinx.coroutines.delay
 import net.dv8tion.jda.api.components.buttons.ButtonStyle
 import net.dv8tion.jda.api.entities.Message
 import net.dv8tion.jda.api.entities.User
@@ -18,7 +17,6 @@ import robort.MessageActivity
 import robort.jda
 import robort.runningMessageActivities
 import java.awt.Color
-import kotlin.time.Duration.Companion.seconds
 
 suspend fun challengeTicTacToeCommand(interaction: SlashCommandInteractionEvent) {
     val opponent = interaction.getOption("opponent")?.asUser?: error("No rock paper scissors opponent")
@@ -127,8 +125,6 @@ class TicTacToeGame(
         }
 
     private suspend fun makeBotMove() {
-        delay(1.seconds)
-
         val winMoves = criticalCellsFor(CellState.OPPONENT_PIECE)
         val blockMoves = criticalCellsFor(CellState.CHALLENGER_PIECE)
         val randomMoves = (0 until 9).filter { !boardState[it].occupied }.shuffled()

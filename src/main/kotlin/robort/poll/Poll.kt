@@ -273,6 +273,12 @@ suspend fun sendPollInfo(event: ButtonInteractionEvent) {
                     - Unter gleich eideutigen Ergebnissen ist die Reihenfolge zufällig
                     - Wenn ein Kreislauf (Schere-Stein-Papier Prinzip) entsteht wird das letzte (uneindeutigere) Ergebnis ignoriert
                     - Nicht-Bewerten einer Option zählt als "0 Sterne"
+                    
+                    | Hallo | Welt |   |   |   |
+                    |-------|------|---|---|---|
+                    | 1     | 2    | 3 | 4 | 5 |
+                    |       |      |   |   |   |
+                    |       |      |   |   |   |
                 """.trimIndent()
             )
 

@@ -72,7 +72,7 @@ object AuraTransactions : Table("aura_transactions") {
 
 object GuildChannelSettings: Table("channel_settings") {
     val guildId = long("guild_id")
-    val channelId = long("channel_id")
+    val channelId = long("channel_id").nullable()
     val channelType = enumerationByName<ChannelType>("channel_type", 64)
 
     override val primaryKey = PrimaryKey(guildId, channelType)

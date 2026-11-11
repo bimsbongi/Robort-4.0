@@ -8,6 +8,7 @@ import net.dv8tion.jda.api.events.interaction.ModalInteractionEvent
 import net.dv8tion.jda.api.events.interaction.component.ButtonInteractionEvent
 import net.dv8tion.jda.api.events.interaction.component.EntitySelectInteractionEvent
 import net.dv8tion.jda.api.events.interaction.component.StringSelectInteractionEvent
+import net.dv8tion.jda.api.events.message.MessageReceivedEvent
 import net.dv8tion.jda.api.interactions.commands.OptionType
 import net.dv8tion.jda.api.interactions.commands.build.Commands
 import net.dv8tion.jda.api.requests.GatewayIntent
@@ -25,6 +26,9 @@ import robort.utils.askOracleCommand
 import robort.utils.bookAuraCommand
 import robort.game.challengeRockPaperScissorsCommand
 import robort.game.challengeTicTacToeCommand
+import robort.invite.listenForInvites
+import robort.menu.ChannelType
+import robort.menu.getGuildSetChannel
 import robort.menu.processMainMenuSelect
 import robort.menu.setMenuCommand
 import robort.utils.onSlashCommand
@@ -167,6 +171,10 @@ private fun registerListeners() {
         processMainMenuSelect(event)
 
         if (!event.interaction.isAcknowledged) event.interaction.deferEdit().await()
+    }
+
+    jda.listener<MessageReceivedEvent> { event ->
+        listenForInvites(event)
     }
 
     mainLogger.info("Registered all listeners")

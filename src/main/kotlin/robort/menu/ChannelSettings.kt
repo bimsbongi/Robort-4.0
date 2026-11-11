@@ -17,16 +17,24 @@ enum class ChannelType {
     DEFAULT;
 }
 
-suspend fun getGuildSetChannel(guildId: Long, channelType: ChannelType) = suspendTransaction {
-    GuildChannelSettings.selectAll()
-        .where { (GuildChannelSettings.guildId eq guildId) and (GuildChannelSettings.channelType eq channelType) }
-        .firstOrNull()?.get(GuildChannelSettings.channelId)?.let { if (it != -1L) jda.getChannel(it) else null }
-}
+private val cachedChannelSettings = mutableMapOf<Pair<Long, ChannelType>, Long?>()
+
+suspend fun getGuildSetChannel(guildId: Long, channelType: ChannelType) =
+    cachedChannelSettings.getOrPut(guildId to channelType) {
+        suspendTransaction {
+            GuildChannelSettings.selectAll()
+                .where { (GuildChannelSettings.guildId eq guildId) and (GuildChannelSettings.channelType eq channelType) }
+                .firstOrNull()?.get(GuildChannelSettings.channelId)
+        }
+    }?.let { jda.getChannel(it) }
+
 
 suspend fun saveGuildSetChannel(guildId: Long, channelType: ChannelType, channelId: Long?) = suspendTransaction {
+    cachedChannelSettings[guildId to channelType] = channelId
+
     GuildChannelSettings.upsert {
         it[GuildChannelSettings.guildId] = guildId
         it[GuildChannelSettings.channelType] = channelType
-        it[GuildChannelSettings.channelId] = channelId?: -1
+        it[GuildChannelSettings.channelId] = channelId
     }
 }
