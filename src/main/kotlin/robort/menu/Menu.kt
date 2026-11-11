@@ -15,7 +15,7 @@ import java.awt.Color
 
 suspend fun setMenuCommand(interaction: SlashCommandInteractionEvent) {
     if (interaction.guild == null) {
-        interaction.reply(":no_entry: Das Menü kann nur auf einem Server eingerichtet werden")
+        interaction.reply(":no_entry: Das Menü kann nur auf einem Server eingerichtet werden").setEphemeral(true).await()
         return
     }
 
