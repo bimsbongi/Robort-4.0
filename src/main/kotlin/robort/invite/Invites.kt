@@ -2,6 +2,7 @@ package robort.invite
 
 import dev.minn.jda.ktx.coroutines.await
 import dev.minn.jda.ktx.interactions.components.Container
+import dev.minn.jda.ktx.messages.edit
 import dev.minn.jda.ktx.messages.send
 import net.dv8tion.jda.api.components.buttons.ButtonStyle
 import net.dv8tion.jda.api.components.selections.EntitySelectMenu
@@ -9,6 +10,7 @@ import net.dv8tion.jda.api.entities.Message
 import net.dv8tion.jda.api.entities.User
 import net.dv8tion.jda.api.entities.channel.middleman.MessageChannel
 import net.dv8tion.jda.api.entities.emoji.Emoji
+import net.dv8tion.jda.api.events.interaction.component.ButtonInteractionEvent
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent
 import robort.MessageActivity
 import robort.jda
@@ -48,6 +50,14 @@ class WaitingResponse(val targetUser: User): InviteResponse {
     override fun toString() = ":stopwatch: Warte auf ${targetUser.effectiveName}"
 }
 
+private val buttonResponseMapping = mapOf(
+    "available" to SimpleResponse.AVAILABLE,
+    "cancel" to SimpleResponse.CANCELED,
+    "soon" to SimpleResponse.SOON,
+    "later" to SimpleResponse.LATER,
+    "unsure" to SimpleResponse.UNSURE
+)
+
 class Invite (
     val organizer: User,
     val channel: MessageChannel,
@@ -71,7 +81,7 @@ class Invite (
         responses.putAll(participants.map { it.idLong to null })
         responses[organizer.idLong] = SimpleResponse.AVAILABLE
 
-        channel.send {
+        message = channel.send {
             useComponentsV2 = true
             components += inviteContainer()
         }.await()
@@ -91,9 +101,9 @@ class Invite (
         )
         separator()
         text(
-            participants.map {
-                "### ${it.effectiveName}\n${responses[it.idLong]?.toString()?: ":question: Unbekannt"}"
-            }.joinToString("\n")
+            participants.joinToString("\n") {
+                "### ${it.effectiveName}\n${responses[it.idLong]?.toString() ?: ":question: Unbekannt"}"
+            }
         )
         separator()
 
@@ -103,12 +113,33 @@ class Invite (
             button(ButtonStyle.SECONDARY, "soon", "", Emoji.fromUnicode("⏳"))
             button(ButtonStyle.SECONDARY, "later", "", Emoji.fromUnicode("⏰"))
             button(ButtonStyle.SECONDARY, "unsure", "", Emoji.fromUnicode("\uD83E\uDD37"))
+            button(ButtonStyle.DANGER, "remind", "", Emoji.fromUnicode("\uD83D\uDD14"))
         }
         actionRow {
             entitySelectMenu("waiting_for_user", listOf(EntitySelectMenu.SelectTarget.USER), placeholder = "Warte auf ...")
         }
-        actionRow {
-            entitySelectMenu("remind_user", listOf(EntitySelectMenu.SelectTarget.USER), placeholder = "Sende Erinnerung an ...")
-        }
+    }
+
+    override suspend fun processButtonClick(event: ButtonInteractionEvent) {
+        if (event.user.idLong !in responses) return
+
+        responses[event.user.idLong] = buttonResponseMapping[event.customId]
+
+        message?.edit {
+            useComponentsV2 = true
+            components += inviteContainer()
+        }?.await()
+    }
+
+    override suspend fun processMessageReply(event: MessageReceivedEvent) {
+        if (event.author.idLong !in responses) return
+
+        event.message.delete().await()
+        responses[event.author.idLong] = CustomResponse(event.message.contentRaw)
+
+        message?.edit {
+            useComponentsV2 = true
+            components += inviteContainer()
+        }?.await()
     }
 }

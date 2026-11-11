@@ -27,8 +27,6 @@ import robort.utils.bookAuraCommand
 import robort.game.challengeRockPaperScissorsCommand
 import robort.game.challengeTicTacToeCommand
 import robort.invite.listenForInvites
-import robort.menu.ChannelType
-import robort.menu.getGuildSetChannel
 import robort.menu.processMainMenuSelect
 import robort.menu.setMenuCommand
 import robort.utils.onSlashCommand
@@ -175,6 +173,12 @@ private fun registerListeners() {
 
     jda.listener<MessageReceivedEvent> { event ->
         listenForInvites(event)
+        val reference = event.message.referencedMessage
+        if (reference != null)
+            runningMessageActivities.forEach { (messageId, activity) ->
+                if (messageId != reference.idLong) return@forEach
+                activity.processMessageReply(event)
+            }
     }
 
     mainLogger.info("Registered all listeners")
