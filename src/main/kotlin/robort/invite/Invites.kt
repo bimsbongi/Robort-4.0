@@ -11,6 +11,7 @@ import net.dv8tion.jda.api.entities.User
 import net.dv8tion.jda.api.entities.channel.middleman.MessageChannel
 import net.dv8tion.jda.api.entities.emoji.Emoji
 import net.dv8tion.jda.api.events.interaction.component.ButtonInteractionEvent
+import net.dv8tion.jda.api.events.interaction.component.EntitySelectInteractionEvent
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent
 import robort.MessageActivity
 import robort.jda
@@ -40,6 +41,10 @@ enum class SimpleResponse(val content: String): InviteResponse {
     UNSURE("\uD83E\uDD37 Keine Ahnung");
 
     override fun toString() = content
+}
+
+object EasterEggResponse: InviteResponse {
+    override fun toString() = ":robot: Ich bin auch dabei! *beep, boop*"
 }
 
 class CustomResponse(val content: String): InviteResponse {
@@ -81,6 +86,8 @@ class Invite (
         responses.putAll(participants.map { it.idLong to null })
         responses[organizer.idLong] = SimpleResponse.AVAILABLE
 
+        if (jda.selfUser.idLong in responses) responses[jda.selfUser.idLong] = EasterEggResponse
+
         message = channel.send {
             useComponentsV2 = true
             components += inviteContainer()
@@ -113,17 +120,44 @@ class Invite (
             button(ButtonStyle.SECONDARY, "soon", "", Emoji.fromUnicode("⏳"))
             button(ButtonStyle.SECONDARY, "later", "", Emoji.fromUnicode("⏰"))
             button(ButtonStyle.SECONDARY, "unsure", "", Emoji.fromUnicode("\uD83E\uDD37"))
-            button(ButtonStyle.DANGER, "remind", "", Emoji.fromUnicode("\uD83D\uDD14"))
         }
         actionRow {
-            entitySelectMenu("waiting_for_user", listOf(EntitySelectMenu.SelectTarget.USER), placeholder = "Warte auf ...")
+            entitySelectMenu(
+                "waiting_for_user",
+                listOf(EntitySelectMenu.SelectTarget.USER),
+                valueRange = 0..1,
+                placeholder = "Warte auf ..."
+            )
         }
+        actionRow {
+            entitySelectMenu(
+                "reminding_user",
+                listOf(EntitySelectMenu.SelectTarget.USER),
+                valueRange = 0..1,
+                placeholder = "Sende Erinnerung an ..."
+            )
+        }
+    }
+
+    private suspend fun sendWaitingReminders(target: User, response: SimpleResponse) {
+        val waiters = participants.filter { isWaitingIndirectly(it, target) }
+        if (waiters.isEmpty()) return
+
+        val waiterMentions = waiters.joinToString(" ") { it.asMention }
+
+        if (response == SimpleResponse.AVAILABLE)
+            channel.sendMessage(":rotating_light: $waiterMentions **${target.effectiveName}** ist jetzt da!").setMessageReference(message).await()
+        else if (response == SimpleResponse.CANCELED)
+            channel.sendMessage(":confused:  $waiterMentions **${target.effectiveName}** hat leider abgesagt.").setMessageReference(message).await()
     }
 
     override suspend fun processButtonClick(event: ButtonInteractionEvent) {
         if (event.user.idLong !in responses) return
 
-        responses[event.user.idLong] = buttonResponseMapping[event.customId]
+        val response = buttonResponseMapping[event.customId]
+        if (response == SimpleResponse.AVAILABLE || response == SimpleResponse.CANCELED) sendWaitingReminders(event.user, response)
+
+        responses[event.user.idLong] = response
 
         message?.edit {
             useComponentsV2 = true
@@ -132,10 +166,89 @@ class Invite (
     }
 
     override suspend fun processMessageReply(event: MessageReceivedEvent) {
-        if (event.author.idLong !in responses) return
+        if (event.author.idLong !in responses || event.author.isBot) return
 
         event.message.delete().await()
         responses[event.author.idLong] = CustomResponse(event.message.contentRaw)
+
+        message?.edit {
+            useComponentsV2 = true
+            components += inviteContainer()
+        }?.await()
+    }
+
+    override suspend fun processEntitySelect(event: EntitySelectInteractionEvent) {
+        if (event.user.idLong !in responses) return
+        val selectedUser = event.values.firstOrNull()?.idLong?.let { jda.retrieveUserById(it).await() }
+
+        if (event.customId == "waiting_for_user") {
+            handleWaitingSelection(selectedUser, event)
+        } else if (event.customId == "reminding_user") {
+            handleReminderSelection(selectedUser, event)
+        }
+    }
+
+    private fun isWaitingIndirectly(waiter: User, target: User): Boolean {
+        var currentUserId = waiter.idLong
+        val checkedUsers = mutableSetOf<Long>()
+        do {
+            if (responses[currentUserId] !is WaitingResponse) return false
+
+            val waitingTarget = (responses[currentUserId] as WaitingResponse).targetUser
+            if (waitingTarget.idLong in checkedUsers) return false
+
+            checkedUsers.add(currentUserId)
+            currentUserId = waitingTarget.idLong
+        } while (currentUserId != target.idLong)
+
+        return true
+    }
+
+    private suspend fun handleReminderSelection(
+        selectedUser: User?,
+        event: EntitySelectInteractionEvent
+    ) {
+        if (selectedUser == null) return
+
+        if (selectedUser.idLong !in responses) {
+            event.interaction.reply(":no_entry: Du kannst nur Teilnehmer dieser Einladung erinnern").setEphemeral(true).await()
+            return
+        }
+
+        channel.sendMessage(":bell: ${selectedUser.asMention} **${event.user.effectiveName}** schickt dir eine Erinnerung!").setMessageReference(message).await()
+    }
+
+    private suspend fun handleWaitingSelection(
+        selectedUser: User?,
+        event: EntitySelectInteractionEvent
+    ) {
+        if (selectedUser == null) responses[event.user.idLong] = null
+        else {
+            if (selectedUser.idLong !in responses) {
+                event.interaction.reply(":no_entry: Du kannst nur auf Teilnehmer dieser Einladung warten").setEphemeral(true).await()
+                return
+            }
+
+            if (responses[selectedUser.idLong] == SimpleResponse.AVAILABLE) {
+                event.interaction.reply(":no_entry: ${selectedUser.effectiveName} hat bereits zugesagt")
+                    .setEphemeral(true).await()
+                return
+            }
+
+            if (responses[selectedUser.idLong] == SimpleResponse.CANCELED) {
+                event.interaction.reply(":no_entry: ${selectedUser.effectiveName} hat bereits abgesagt")
+                    .setEphemeral(true).await()
+                return
+            }
+
+            if (isWaitingIndirectly(selectedUser, event.user)) {
+                event.interaction.reply(":no_entry: ${selectedUser.effectiveName} wartet bereits (indirekt) auf dich")
+                    .setEphemeral(true).await()
+                return
+            }
+
+            responses[event.user.idLong] = WaitingResponse(selectedUser)
+        }
 
         message?.edit {
             useComponentsV2 = true

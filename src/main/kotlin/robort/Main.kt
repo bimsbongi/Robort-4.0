@@ -35,6 +35,7 @@ import robort.utils.showProfileColorCommand
 val mainLogger = LoggerFactory.getLogger("Robort")
 val jda = default(System.getenv("BOT_TOKEN") ?: "") {
     intents += GatewayIntent.GUILD_MEMBERS
+    intents += GatewayIntent.MESSAGE_CONTENT
 }
 
 suspend fun main() {
@@ -167,6 +168,11 @@ private fun registerListeners() {
 
     jda.listener<EntitySelectInteractionEvent> { event ->
         processMainMenuSelect(event)
+
+        runningMessageActivities.forEach { (messageId, activity) ->
+            if (messageId != event.interaction.messageIdLong) return@forEach
+            activity.processEntitySelect(event)
+        }
 
         if (!event.interaction.isAcknowledged) event.interaction.deferEdit().await()
     }
