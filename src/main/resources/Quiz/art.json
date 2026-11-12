@@ -310,6 +310,23 @@
           "weight" : 0
         }
       ]
+    },
+    {
+      "id" : 18,
+      "textContent" : "Flo's Jahrgang\n_Jahrbuch_, 2016\n\nLiteratur",
+      "imagePath" : "/Quiz/ArtAssets/kunstOderWeg.jpg",
+      "options" : [
+        {
+          "name" : "Kunst!",
+          "emoji" : "\uD83C\uDFA8",
+          "weight" : 1
+        },
+        {
+          "name" : "Kann weg",
+          "emoji" : "\uD83D\uDDD1\uFE0F",
+          "weight" : 0
+        }
+      ]
     }
   ]
 }
