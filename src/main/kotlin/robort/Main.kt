@@ -9,8 +9,10 @@ import net.dv8tion.jda.api.events.interaction.component.ButtonInteractionEvent
 import net.dv8tion.jda.api.events.interaction.component.EntitySelectInteractionEvent
 import net.dv8tion.jda.api.events.interaction.component.StringSelectInteractionEvent
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent
+import net.dv8tion.jda.api.interactions.commands.Command
 import net.dv8tion.jda.api.interactions.commands.OptionType
 import net.dv8tion.jda.api.interactions.commands.build.Commands
+import net.dv8tion.jda.api.interactions.commands.build.OptionData
 import net.dv8tion.jda.api.requests.GatewayIntent
 import org.slf4j.LoggerFactory
 import robort.poll.listenForPollModalSubmission
@@ -26,6 +28,7 @@ import robort.utils.askOracleCommand
 import robort.utils.bookAuraCommand
 import robort.game.challengeRockPaperScissorsCommand
 import robort.game.challengeTicTacToeCommand
+import robort.game.metaGamblingCommand
 import robort.invite.listenForInvites
 import robort.menu.processMainMenuSelect
 import robort.menu.setMenuCommand
@@ -109,6 +112,18 @@ suspend fun registerCommands() {
         .addOption(OptionType.STRING, "reason", "Grund der Verbuchung", false))
     jda.onSlashCommand("aura") {
         bookAuraCommand(it)
+    }
+
+    registerCommandAction.addCommands( Commands.slash("meta-gambling", "Setze aufs Haus und spiele mit den Aktienkursen von Casinos")
+        .addOption(OptionType.STRING, "ticker", "Das Ticker-Symbol auf das du setzt", false)
+        .addOption(OptionType.NUMBER, "amount", "Einsatz", false)
+        .addOptions(
+            OptionData(OptionType.STRING, "direction", "Richtug der Kursveränderung auf die du setzt", false)
+                .addChoices(Command.Choice("fallend", "fallend"), Command.Choice("steigend", "steigend"))
+        )
+    )
+    jda.onSlashCommand("meta-gambling") {
+        metaGamblingCommand(it)
     }
 
     registerCommandAction.addCommands(Commands.slash("ssp", "Jemanden zu Schere-Stein-Papier herausfordern")

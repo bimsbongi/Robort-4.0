@@ -1,0 +1,22 @@
+[
+  {
+    "ticker" : "LVS",
+    "name" : "Las Vegas Sands Corporation"
+  },
+  {
+    "ticker" : "WYNN",
+    "name" : "Wynn Resorts Limited"
+  },
+  {
+    "ticker" : "MGM",
+    "name" : "MGM Resorts International"
+  },
+  {
+    "ticker" : "CZR",
+    "name" : "Caesars Entertainment Inc."
+  },
+  {
+    "ticker" : "BYD",
+    "name" : "Boyd Gaming Corporation"
+  }
+]
