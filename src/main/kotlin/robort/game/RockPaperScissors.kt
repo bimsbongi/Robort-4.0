@@ -91,14 +91,17 @@ class RockPaperScissorsGame(
         if (event.user == challenger && challengerChoice == null) challengerChoice = event.customId
         else if (event.user == opponent && opponentChoice == null) opponentChoice = event.customId
 
-        if (opponent.idLong == jda.selfUser.idLong) {
-            opponentChoice = if (Math.random() > 0.5)
-                arrayOf("rock", "paper", "scissors").random()
-            else
-                if (challengerChoice == "rock") "paper" else if (challengerChoice == "paper") "scissors" else "rock"
-        }
+        if (opponent.idLong == jda.selfUser.idLong) makeBotMove()
+
 
         if (challengerChoice != null && opponentChoice != null) conclude()
+    }
+
+    private fun makeBotMove() {
+        opponentChoice = if (Math.random() > 0.5)
+            arrayOf("rock", "paper", "scissors").random()
+        else
+            if (challengerChoice == "rock") "paper" else if (challengerChoice == "paper") "scissors" else "rock"
     }
 }
 

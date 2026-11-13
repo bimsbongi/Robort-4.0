@@ -138,11 +138,11 @@ class Poll(
                 )
             }
         }
-
+        separator()
         actionRow {
-            button(ButtonStyle.PRIMARY, "poll_submit", "", Emoji.fromUnicode("\uD83D\uDCE9"), !active)
-            button(ButtonStyle.DANGER, "poll_end", "", Emoji.fromUnicode("\uD83D\uDED1"),!active)
-            button(ButtonStyle.SECONDARY, "poll_info", "", Emoji.fromUnicode("\uD83D\uDCDA"))
+            button(ButtonStyle.PRIMARY, "poll_submit", "Abstimmen", Emoji.fromUnicode("\uD83D\uDCE9"), !active)
+            button(ButtonStyle.DANGER, "poll_end", "Beenden", Emoji.fromUnicode("\uD83D\uDED1"),!active)
+            button(ButtonStyle.SECONDARY, "poll_info", "Infos", Emoji.fromUnicode("\uD83D\uDCDA"))
         }
 
         text(if (active) "Umfrage endet <t:${System.currentTimeMillis() / 1000 + duration * 60}:R>" else "*Umfrage ist beendet*")
@@ -273,12 +273,6 @@ suspend fun sendPollInfo(event: ButtonInteractionEvent) {
                     - Unter gleich eideutigen Ergebnissen ist die Reihenfolge zufällig
                     - Wenn ein Kreislauf (Schere-Stein-Papier Prinzip) entsteht wird das letzte (uneindeutigere) Ergebnis ignoriert
                     - Nicht-Bewerten einer Option zählt als "0 Sterne"
-                    
-                    | Hallo | Welt |   |   |   |
-                    |-------|------|---|---|---|
-                    | 1     | 2    | 3 | 4 | 5 |
-                    |       |      |   |   |   |
-                    |       |      |   |   |   |
                 """.trimIndent()
             )
 

@@ -32,11 +32,12 @@ import robort.game.metaGamblingCommand
 import robort.invite.listenForInvites
 import robort.menu.processMainMenuSelect
 import robort.menu.setMenuCommand
+import robort.utils.envOrDefault
 import robort.utils.onSlashCommand
 import robort.utils.showProfileColorCommand
 
 val mainLogger = LoggerFactory.getLogger("Robort")
-val jda = default(System.getenv("BOT_TOKEN") ?: "") {
+val jda = default(envOrDefault("BOT_TOKEN", "")) {
     intents += GatewayIntent.GUILD_MEMBERS
     intents += GatewayIntent.MESSAGE_CONTENT
 }
