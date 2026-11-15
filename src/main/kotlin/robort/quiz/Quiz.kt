@@ -87,6 +87,7 @@ class Quiz (
     var secondaryWeightSum = 0
     val shuffledQuestions = quizData.questions.shuffled()
     val guildMemberAnswers: MutableMap<Long, UserQuizAnswer> = mutableMapOf()
+    var interactionLock = false
 
     suspend fun startQuizCommand(interaction: SlashCommandInteractionEvent) {
         if (answerProvidingGuild != null) { guildMemberAnswers.putAll(loadGuildMemberAnswers(answerProvidingGuild, quizType)) }
@@ -144,9 +145,12 @@ class Quiz (
     }
 
     override suspend fun processButtonClick(event: ButtonInteractionEvent) {
-        if (event.message.id == lastQuestionMessage?.id && event.user.idLong == player.idLong) {
+        if (event.message.id == lastQuestionMessage?.id && event.user.idLong == player.idLong && !interactionLock) {
             event.deferEdit().await()
+
+            interactionLock = true
             processAnswer(event.customId.toInt())
+            interactionLock = false
         }
     }
 

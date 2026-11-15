@@ -89,6 +89,10 @@ suspend fun startPollCommand(interaction: SlashCommandInteractionEvent) {
     interaction.replyModal(pollSetupModal(interaction.channel.idLong)).await()
 }
 
+suspend fun startPollButton(event: ButtonInteractionEvent, targetChannel: MessageChannel) {
+    event.replyModal(pollSetupModal(targetChannel.idLong)).await()
+}
+
 val pollColor = Color(0x4daaff)
 
 class Poll(
@@ -121,6 +125,8 @@ class Poll(
         accentColor = pollColor
 
         text("**${creator.effectiveName}**\n## \uD83D\uDDF3\uFE0F Umfrage\n### ${question}\n")
+
+        separator()
 
         options.forEachIndexed { index, option ->
             text("**${index + 1}**. $option")
@@ -254,7 +260,11 @@ private data class OptionMatchup(val firstId: Int, val secondId: Int, val firstP
     val looserId = if (firstPreferences <= secondPreferences) firstId else secondId
 }
 
-suspend fun sendPollInfo(event: ButtonInteractionEvent) {
+suspend fun listenForPollInfoButtonClick(event: ButtonInteractionEvent) {
+    if (event.customId == "poll_info") sendPollInfo(event)
+}
+
+private suspend fun sendPollInfo(event: ButtonInteractionEvent) {
     event.reply_ {
         useComponentsV2 = true
         components += Container {
@@ -270,7 +280,7 @@ suspend fun sendPollInfo(event: ButtonInteractionEvent) {
                     
                     ### Details
                     - Eindeutigere Stichwahl-Ergebnisse werden zuerst abgearbeitet
-                    - Unter gleich eideutigen Ergebnissen ist die Reihenfolge zufällig
+                    - Unter gleich eindeutigen Ergebnissen ist die Reihenfolge zufällig
                     - Wenn ein Kreislauf (Schere-Stein-Papier Prinzip) entsteht wird das letzte (uneindeutigere) Ergebnis ignoriert
                     - Nicht-Bewerten einer Option zählt als "0 Sterne"
                 """.trimIndent()

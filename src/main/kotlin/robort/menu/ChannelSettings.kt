@@ -2,6 +2,10 @@ package robort.menu
 
 import dev.minn.jda.ktx.generics.getChannel
 import kotlinx.coroutines.flow.firstOrNull
+import kotlinx.coroutines.flow.toSet
+import net.dv8tion.jda.api.entities.channel.concrete.TextChannel
+import net.dv8tion.jda.api.entities.channel.middleman.GuildChannel
+import net.dv8tion.jda.api.entities.channel.middleman.MessageChannel
 import org.jetbrains.exposed.v1.core.and
 import org.jetbrains.exposed.v1.core.eq
 import org.jetbrains.exposed.v1.r2dbc.selectAll
@@ -26,7 +30,7 @@ suspend fun getGuildSetChannel(guildId: Long, channelType: ChannelType) =
                 .where { (GuildChannelSettings.guildId eq guildId) and (GuildChannelSettings.channelType eq channelType) }
                 .firstOrNull()?.get(GuildChannelSettings.channelId)
         }
-    }?.let { jda.getChannel(it) }
+    }?.let { jda.getChannel<TextChannel>(it) }
 
 
 suspend fun saveGuildSetChannel(guildId: Long, channelType: ChannelType, channelId: Long?) = suspendTransaction {
@@ -37,4 +41,16 @@ suspend fun saveGuildSetChannel(guildId: Long, channelType: ChannelType, channel
         it[GuildChannelSettings.channelType] = channelType
         it[GuildChannelSettings.channelId] = channelId
     }
+}
+
+suspend fun getAllSetChannels(channelType: ChannelType): List<TextChannel> {
+    val databaseResult = suspendTransaction {
+        GuildChannelSettings.selectAll()
+            .where { GuildChannelSettings.channelType eq channelType }
+            .toSet()
+    }
+
+   return databaseResult.mapNotNull { resultRow ->
+        cachedChannelSettings.getOrPut(resultRow[GuildChannelSettings.guildId] to channelType) { resultRow[GuildChannelSettings.channelId] }?.let { jda.getChannel<TextChannel>(it) }
+   }
 }

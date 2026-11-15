@@ -4,7 +4,9 @@ package robort.quiz
 import dev.minn.jda.ktx.coroutines.await
 import dev.minn.jda.ktx.interactions.components.Container
 import kotlinx.serialization.json.Json
+import net.dv8tion.jda.api.entities.channel.middleman.MessageChannel
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent
+import net.dv8tion.jda.api.events.interaction.component.ButtonInteractionEvent
 import robort.runningChannelActivities
 import robort.utils.loadResourceFile
 import java.awt.Color
@@ -20,6 +22,16 @@ suspend fun requestPoliticalCompassQuizCommand(interaction: SlashCommandInteract
 
     val quiz = Quiz(politicalCompassQuizData, interaction.channel, interaction.user, PoliticalCompassResultCalculator, null, QuizType.COMPASS)
     quiz.startQuizCommand(interaction)
+}
+
+suspend fun requestPoliticalCompassQuizButton(event: ButtonInteractionEvent, targetChannel: MessageChannel) {
+    if (runningChannelActivities.containsKey(targetChannel.idLong)) {
+        event.interaction.reply(":no_entry: Im default Kanal läuft noch eine andere Aktivität. Warte kurz oder nutze einen anderen Kanal.").setEphemeral(true).await()
+        return
+    }
+
+    val quiz = Quiz(politicalCompassQuizData, targetChannel, event.interaction.user, PoliticalCompassResultCalculator, null, QuizType.COMPASS)
+    quiz.startQuizRemote()
 }
 
 data object PoliticalCompassResultCalculator : QuizResultCalculator {
@@ -49,7 +61,7 @@ data object PoliticalCompassResultCalculator : QuizResultCalculator {
         ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀[-3, -2][-2, -2][-1, -2]║[1, -2][2, -2][3, -2]
         ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀[-3, -3][-2, -3][-1, -3]║[1, -3][2, -3][3, -3]
         ⠀
-        ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀V-Bucks Verwaltung"""
+        ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀V-Bucks Verwaltung""".trimIndent()
 
         repeat(7) { xRaw ->
             repeat(7) { yRaw ->

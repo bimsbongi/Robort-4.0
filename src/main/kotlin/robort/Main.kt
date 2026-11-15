@@ -16,7 +16,6 @@ import net.dv8tion.jda.api.interactions.commands.build.OptionData
 import net.dv8tion.jda.api.requests.GatewayIntent
 import org.slf4j.LoggerFactory
 import robort.poll.listenForPollModalSubmission
-import robort.poll.sendPollInfo
 import robort.poll.startPollCommand
 import robort.quiz.requestArtQuizCommand
 import robort.quiz.requestBigQuestionsQuizCommand
@@ -30,8 +29,12 @@ import robort.game.challengeRockPaperScissorsCommand
 import robort.game.challengeTicTacToeCommand
 import robort.game.metaGamblingCommand
 import robort.invite.listenForInvites
+import robort.menu.listenForMainMenuButtonClick
+import robort.menu.listenForMenuModalSubmission
 import robort.menu.processMainMenuSelect
 import robort.menu.setMenuCommand
+import robort.poll.listenForPollInfoButtonClick
+import robort.quote.launchBackgroundQuoteDownloader
 import robort.utils.envOrDefault
 import robort.utils.onSlashCommand
 import robort.utils.showProfileColorCommand
@@ -40,14 +43,14 @@ val mainLogger = LoggerFactory.getLogger("Robort")
 val jda = default(envOrDefault("BOT_TOKEN", "")) {
     intents += GatewayIntent.GUILD_MEMBERS
     intents += GatewayIntent.MESSAGE_CONTENT
+    intents += GatewayIntent.GUILD_MESSAGES
 }
 
 suspend fun main() {
     registerCommands()
-
     registerListeners()
-
     registerDatabase()
+    launchBackgroundQuoteDownloader()
 }
 
 suspend fun registerCommands() {
@@ -160,13 +163,15 @@ private fun registerListeners() {
             activity.processButtonClick(event)
         }
 
-        if (event.customId == "poll_info") sendPollInfo(event)
+        listenForPollInfoButtonClick(event)
+        listenForMainMenuButtonClick(event)
 
         if (!event.interaction.isAcknowledged) event.interaction.deferEdit().await()
     }
 
     jda.listener<ModalInteractionEvent> { event ->
         listenForPollModalSubmission(event)
+        listenForMenuModalSubmission(event)
     }
 
     jda.listener<StringSelectInteractionEvent> { event ->

@@ -3,7 +3,9 @@ package robort.quiz
 import dev.minn.jda.ktx.coroutines.await
 import dev.minn.jda.ktx.interactions.components.Container
 import kotlinx.serialization.json.Json
+import net.dv8tion.jda.api.entities.channel.middleman.MessageChannel
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent
+import net.dv8tion.jda.api.events.interaction.component.ButtonInteractionEvent
 import robort.runningChannelActivities
 import robort.utils.loadResourceFile
 import java.awt.Color
@@ -19,6 +21,16 @@ suspend fun requestBigQuestionsQuizCommand(interaction: SlashCommandInteractionE
 
     val quiz = Quiz(bigQuestionsQuizData, interaction.channel, interaction.user, BigQuestionsQuizResultCalculator, interaction.guild, QuizType.BIG_QUESTIONS)
     quiz.startQuizCommand(interaction)
+}
+
+suspend fun requestBigQuestionsQuizCommand(event: ButtonInteractionEvent, targetChannel: MessageChannel) {
+    if (runningChannelActivities.containsKey(targetChannel.idLong)) {
+        event.interaction.reply(":no_entry: Im default Kanal läuft noch eine andere Aktivität. Warte kurz oder nutze einen anderen Kanal.").setEphemeral(true).await()
+        return
+    }
+
+    val quiz = Quiz(bigQuestionsQuizData, targetChannel, event.user, BigQuestionsQuizResultCalculator, event.guild, QuizType.BIG_QUESTIONS)
+    quiz.startQuizRemote()
 }
 
 data object BigQuestionsQuizResultCalculator : QuizResultCalculator {

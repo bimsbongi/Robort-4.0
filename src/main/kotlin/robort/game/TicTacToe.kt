@@ -1,16 +1,21 @@
 package robort.game
 
 import dev.minn.jda.ktx.coroutines.await
+import dev.minn.jda.ktx.generics.getChannel
 import dev.minn.jda.ktx.interactions.components.Container
 import dev.minn.jda.ktx.interactions.components.InlineActionRow
+import dev.minn.jda.ktx.interactions.components.Label
+import dev.minn.jda.ktx.interactions.components.Modal
 import dev.minn.jda.ktx.messages.edit
 import dev.minn.jda.ktx.messages.reply_
 import dev.minn.jda.ktx.messages.send
 import net.dv8tion.jda.api.components.buttons.ButtonStyle
+import net.dv8tion.jda.api.components.selections.EntitySelectMenu
 import net.dv8tion.jda.api.entities.Message
 import net.dv8tion.jda.api.entities.User
 import net.dv8tion.jda.api.entities.channel.middleman.MessageChannel
 import net.dv8tion.jda.api.entities.emoji.Emoji
+import net.dv8tion.jda.api.events.interaction.ModalInteractionEvent
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent
 import net.dv8tion.jda.api.events.interaction.component.ButtonInteractionEvent
 import robort.MessageActivity
@@ -23,6 +28,33 @@ suspend fun challengeTicTacToeCommand(interaction: SlashCommandInteractionEvent)
 
     val game = TicTacToeGame(interaction.user, opponent, interaction.channel)
     game.startGameCommand(interaction)
+    runningMessageActivities[game.message!!.idLong] = game
+}
+
+suspend fun challengeTicTacToeButton(event: ButtonInteractionEvent, targetChannel: MessageChannel) {
+    event.replyModal(
+        Modal(title = "Gegner für TicTacToe", id = "challenge_ttt:${targetChannel.idLong}") {
+            components += Label (
+                label = "Gegner",
+                child = EntitySelectMenu.create(
+                    "opponent",
+                    listOf(EntitySelectMenu.SelectTarget.USER)
+                ).setMaxValues(1).setMinValues(1).build()
+            )
+        }
+    ).await()
+}
+
+suspend fun listenForTicTacToeModalSubmission(event: ModalInteractionEvent) {
+    if (!event.interaction.modalId.startsWith("challenge_ttt")) return
+
+    val opponent = event.getValue("opponent")?.asMentions?.users?.firstOrNull()?: error("Cannot find opponent")
+    val channel = jda.getChannel<MessageChannel>(event.interaction.modalId.split(":").last())?: error("Cannot find channel for TicTacToe")
+
+    event.deferEdit().await()
+
+    val game = TicTacToeGame(event.user, opponent, channel)
+    game.startGameRemote()
     runningMessageActivities[game.message!!.idLong] = game
 }
 
