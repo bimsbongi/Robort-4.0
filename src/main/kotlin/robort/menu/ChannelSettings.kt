@@ -5,6 +5,7 @@ import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.toSet
 import net.dv8tion.jda.api.entities.channel.concrete.TextChannel
 import net.dv8tion.jda.api.entities.channel.middleman.GuildChannel
+import net.dv8tion.jda.api.entities.channel.middleman.GuildMessageChannel
 import net.dv8tion.jda.api.entities.channel.middleman.MessageChannel
 import org.jetbrains.exposed.v1.core.and
 import org.jetbrains.exposed.v1.core.eq
@@ -30,7 +31,7 @@ suspend fun getGuildSetChannel(guildId: Long, channelType: ChannelType) =
                 .where { (GuildChannelSettings.guildId eq guildId) and (GuildChannelSettings.channelType eq channelType) }
                 .firstOrNull()?.get(GuildChannelSettings.channelId)
         }
-    }?.let { jda.getChannel<TextChannel>(it) }
+    }?.let { jda.getChannel<GuildMessageChannel>(it) }
 
 
 suspend fun saveGuildSetChannel(guildId: Long, channelType: ChannelType, channelId: Long?) = suspendTransaction {
@@ -43,7 +44,7 @@ suspend fun saveGuildSetChannel(guildId: Long, channelType: ChannelType, channel
     }
 }
 
-suspend fun getAllSetChannels(channelType: ChannelType): List<TextChannel> {
+suspend fun getAllSetChannels(channelType: ChannelType): List<GuildMessageChannel> {
     val databaseResult = suspendTransaction {
         GuildChannelSettings.selectAll()
             .where { GuildChannelSettings.channelType eq channelType }
@@ -51,6 +52,8 @@ suspend fun getAllSetChannels(channelType: ChannelType): List<TextChannel> {
     }
 
    return databaseResult.mapNotNull { resultRow ->
-        cachedChannelSettings.getOrPut(resultRow[GuildChannelSettings.guildId] to channelType) { resultRow[GuildChannelSettings.channelId] }?.let { jda.getChannel<TextChannel>(it) }
+        cachedChannelSettings.getOrPut(resultRow[GuildChannelSettings.guildId] to channelType) {
+            resultRow[GuildChannelSettings.channelId]
+        }?.let { jda.getChannel<GuildMessageChannel>(it) }
    }
 }
