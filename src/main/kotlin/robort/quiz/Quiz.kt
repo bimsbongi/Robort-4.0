@@ -145,8 +145,10 @@ class Quiz (
     }
 
     override suspend fun processButtonClick(event: ButtonInteractionEvent) {
-        if (event.message.id == lastQuestionMessage?.id && event.user.idLong == player.idLong && !interactionLock) {
+        if (event.message.id == lastQuestionMessage?.id && event.user.idLong == player.idLong) {
             event.deferEdit().await()
+
+            if (interactionLock) return
 
             interactionLock = true
             processAnswer(event.customId.toInt())

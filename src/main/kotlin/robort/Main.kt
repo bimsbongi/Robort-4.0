@@ -1,9 +1,12 @@
 package robort
 
 import dev.minn.jda.ktx.coroutines.await
+import dev.minn.jda.ktx.events.CoroutineEventManager
 import dev.minn.jda.ktx.events.listener
 import dev.minn.jda.ktx.jdabuilder.default
 import dev.minn.jda.ktx.jdabuilder.intents
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.asCoroutineDispatcher
 import net.dv8tion.jda.api.events.interaction.ModalInteractionEvent
 import net.dv8tion.jda.api.events.interaction.component.ButtonInteractionEvent
 import net.dv8tion.jda.api.events.interaction.component.EntitySelectInteractionEvent
@@ -38,12 +41,14 @@ import robort.quote.launchBackgroundQuoteDownloader
 import robort.utils.envOrDefault
 import robort.utils.onSlashCommand
 import robort.utils.showProfileColorCommand
+import java.util.concurrent.Executors
 
 val mainLogger = LoggerFactory.getLogger("Robort")
-val jda = default(envOrDefault("BOT_TOKEN", "")) {
+val jda = default(envOrDefault("BOT_TOKEN", ""), enableCoroutines = false) {
     intents += GatewayIntent.GUILD_MEMBERS
     intents += GatewayIntent.MESSAGE_CONTENT
     intents += GatewayIntent.GUILD_MESSAGES
+    setEventManager(CoroutineEventManager(CoroutineScope(Executors.newSingleThreadExecutor().asCoroutineDispatcher())))
 }
 
 suspend fun main() {

@@ -19,7 +19,7 @@ import robort.jda
 import java.time.LocalDateTime
 import kotlin.time.Clock
 
-private val randomQuoteCooldownPercentage = 0.5
+private const val randomQuoteCooldownPercentage = 0.5
 
 private data class QuoteSourceMessage(val messageId: Long, val channelId: Long, val timestamp: Long)
 
