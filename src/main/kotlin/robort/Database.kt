@@ -33,7 +33,8 @@ suspend fun setupDatabase() {
             Aura,
             AuraTransactions,
             GuildChannelSettings,
-            QuoteMessages
+            QuoteMessages,
+            ChosenDailyQuotes
         )
     }
 }
@@ -87,4 +88,13 @@ object QuoteMessages: Table("quote_messages") {
     val cachedContent = text("cached_content")
 
     override val primaryKey = PrimaryKey(messageId)
+}
+
+object ChosenDailyQuotes: Table("chosen_daily_quotes") {
+    val messageId = long("message_id")
+    val channelId = long("channel_id")
+    val guildId = long("guild_id")
+    val timestamp = long("timestamp")
+
+    override val primaryKey = PrimaryKey(QuoteMessages.messageId)
 }
