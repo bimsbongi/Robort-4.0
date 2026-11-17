@@ -52,10 +52,11 @@ private suspend fun selectAnniversaryQuote(candidates: Set<QuoteSourceMessage>, 
 
     return candidates.mapNotNull {
         val quoteDate = LocalDate.fromEpochDays(it.timestamp / (60 * 60 * 24))
-        if (quoteDate.day != currentDate.day || quoteDate.month != currentDate.month || it.messageId in recentlyPostedIds) return@mapNotNull null
+        val age = currentDate.year - quoteDate.year
+        if (quoteDate.day != currentDate.day || quoteDate.month != currentDate.month || it.messageId in recentlyPostedIds || age == 0) return@mapNotNull null
 
-        it to currentDate.year - quoteDate.year
-    }.shuffled().sortedBy { it.second }.firstNotNullOfOrNull {
+        it to age
+    }.shuffled().sortedByDescending { it.second }.firstNotNullOfOrNull {
         jda.getChannel<GuildMessageChannel>(it.first.channelId)?.retrieveMessageById(it.first.messageId)?.await()?.to(it.second)
     }
 }
