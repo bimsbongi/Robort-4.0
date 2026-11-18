@@ -39,14 +39,14 @@ private suspend fun fetchRecentlyPostedQuotes(guildId: Long, limit: Int) = suspe
         .map { QuoteDailyPostedMessage(it[QuoteMessages.messageId], it[QuoteMessages.channelId], it[QuoteMessages.timestamp]) }.toSet()
 }
 
-suspend fun selectDailyQuote(guildId: Long): Pair<Message, Int?>? {
+suspend fun selectDailyQuote(guildId: Long): Pair<Quote, Int?>? {
     val candidates = fetchCandidateQuoteMessages(guildId)
     val recentlyPostedQuotes = fetchRecentlyPostedQuotes(guildId, (candidates.size * randomQuoteCooldownPercentage).toInt())
 
     return selectAnniversaryQuote(candidates, recentlyPostedQuotes)?: selectRandomDailyQuote(candidates, recentlyPostedQuotes)?.to(null)
 }
 
-private suspend fun selectAnniversaryQuote(candidates: Set<QuoteSourceMessage>, recentlyPostedQuotes: Set<QuoteDailyPostedMessage>): Pair<Message, Int>? {
+private suspend fun selectAnniversaryQuote(candidates: Set<QuoteSourceMessage>, recentlyPostedQuotes: Set<QuoteDailyPostedMessage>): Pair<Quote, Int>? {
     val recentlyPostedIds = recentlyPostedQuotes.map { it.messageId }
     val currentDate = Clock.System.todayIn(TimeZone.currentSystemDefault())
 
@@ -57,16 +57,21 @@ private suspend fun selectAnniversaryQuote(candidates: Set<QuoteSourceMessage>, 
 
         it to age
     }.shuffled().sortedByDescending { it.second }.firstNotNullOfOrNull {
-        jda.getChannel<GuildMessageChannel>(it.first.channelId)?.retrieveMessageById(it.first.messageId)?.await()?.to(it.second)
+        jda.getChannel<GuildMessageChannel>(it.first.channelId)?.retrieveMessageById(it.first.messageId)?.await()?.parseQuote()?.to(it.second)
     }
 }
 
-private suspend fun selectRandomDailyQuote(candidates: Set<QuoteSourceMessage>, recentlyPostedQuotes: Set<QuoteDailyPostedMessage>): Message? {
+private suspend fun selectRandomDailyQuote(candidates: Set<QuoteSourceMessage>, recentlyPostedQuotes: Set<QuoteDailyPostedMessage>): Quote? {
     val recentlyPostedIds = recentlyPostedQuotes.map { it.messageId }
     val newCandidates = candidates.filter { candidate -> candidate.messageId !in recentlyPostedIds }
 
     return newCandidates.shuffled().firstNotNullOfOrNull {
-        jda.getChannel<GuildMessageChannel>(it.channelId)?.retrieveMessageById(it.messageId)?.await()
+        jda.getChannel<GuildMessageChannel>(it.channelId)?.retrieveMessageById(it.messageId)?.await()?.parseQuote()
     }
+}
+
+private fun Message.parseQuote(): Quote? {
+    // TODO
+    return null
 }
 

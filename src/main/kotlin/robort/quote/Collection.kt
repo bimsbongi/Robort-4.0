@@ -23,7 +23,7 @@ import kotlin.time.Duration.Companion.hours
 
 private val scrapeScope = CoroutineScope(Dispatchers.Default)
 
-suspend fun scrapeQuoteMessages(quoteChannel: GuildMessageChannel) {
+private suspend fun scrapeQuoteMessages(quoteChannel: GuildMessageChannel) {
     val latestMessageId = quoteChannel.latestMessageIdLong
 
     val lastKnownMessageId = suspendTransaction {
@@ -63,6 +63,12 @@ suspend fun backgroundQuoteDownloader() {
             scrapeQuoteMessages(channel)
         }
 
-        delay(1.hours)
+        delay(12.hours)
     }
 }
+
+data class Quote(
+    val content: List<Pair<String, String>>
+)
+
+private fun extractQuote()

@@ -1,5 +1,6 @@
 package robort.quote
 
+import net.dv8tion.jda.api.entities.Message
 import robort.utils.loadResourceFile
 import robort.utils.splitTextIntoLines
 import java.awt.Color
@@ -14,10 +15,11 @@ import javax.imageio.ImageIO
 import kotlin.math.exp
 import kotlin.math.min
 import kotlin.math.sqrt
+import kotlin.random.Random
 
 private const val targetMainTextWidth = 0.8
 private const val baseAuthorTestWidth = 0.1
-private const val maxAuthorTextWidth = 0.38
+private const val maxAuthorTextWidth = 0.3
 private const val targetAuthorTextPos = 0.8
 
 private const val mainTextTargetChars = 15
@@ -35,11 +37,14 @@ private const val wideFormatCenterHeight = 0.4
 private const val tallFormatCenterHeight = 0.3
 
 private const val shadowBlurStrength = 0.035
-private const val shadowTransparency = 0.6
+private const val shadowTransparency = 0.5
 
 private enum class KernelOrientation {
     HORIZONTAL, VERTICAL
 }
+
+val fontsDirectory = loadResourceFile("/Quote/Fonts")?: error("Cannot find font directory")
+val backgroundsDirectory = loadResourceFile("/Quote/Backgrounds")?: error("Cannot find backgrounds directory")
 
 private fun get1dGaussianBlurFilter(radius: Int, orientation: KernelOrientation): ConvolveOp {
     if (radius < 1) {
@@ -93,10 +98,10 @@ private fun makeImageTranslucent(image: BufferedImage, factor: Double) {
     image.setRGB(0, 0, width, height, resultPixels, 0, width);
 }
 
-private fun findFontSize(targetWidth: Int, maxHeight: Int, g2d: Graphics2D, fontName: String, text: String): Int {
-    var fontSize = 5000
+private fun findFontSize(targetWidth: Int, maxHeight: Int, g2d: Graphics2D, font: Font, text: String): Int {
+    var fontSize = 1000
     while (fontSize > 10) {
-        g2d.font = Font(fontName, Font.PLAIN, fontSize)
+        g2d.font = font.deriveFont(fontSize.toFloat())
         val bounds = g2d.fontMetrics.getStringBounds(text, g2d)
 
         if (bounds.width <= targetWidth && bounds.height <= maxHeight) break
@@ -106,7 +111,7 @@ private fun findFontSize(targetWidth: Int, maxHeight: Int, g2d: Graphics2D, font
     return fontSize
 }
 
-private fun addMultilineTextToImage(baseImage: BufferedImage, yMid: Double, xMid: Double, w: Double, hMax: Double, lines: List<String>, fontName: String, color: Color) {
+private fun addMultilineTextToImage(baseImage: BufferedImage, yMid: Double, xMid: Double, w: Double, hMax: Double, lines: List<String>, font: Font, color: Color) {
     val shadowImage = BufferedImage(baseImage.width, baseImage.height, BufferedImage.TYPE_INT_ARGB)
     val intermediateImage = BufferedImage(baseImage.width, baseImage.height, BufferedImage.TYPE_INT_ARGB)
     val stencilImage = BufferedImage(baseImage.width, baseImage.height, BufferedImage.TYPE_INT_ARGB)
@@ -116,17 +121,15 @@ private fun addMultilineTextToImage(baseImage: BufferedImage, yMid: Double, xMid
 
     val textAreaWidth = (w * baseImage.width).toInt()
     val textAreaHeight = (hMax* baseImage.height / lines.size).toInt()
-    val fontSize = lines.minOf { findFontSize(textAreaWidth, textAreaHeight, shadowGraphics, fontName, it) }
-    shadowGraphics.font = Font(fontName, Font.PLAIN, fontSize)
+    val fontSize = lines.minOf { findFontSize(textAreaWidth, textAreaHeight, shadowGraphics, font, it) }
+    shadowGraphics.font = font.deriveFont(fontSize.toFloat())
 
     val totalHeight = lines.size * shadowGraphics.fontMetrics.height
 
     var y = (yMid * baseImage.height - totalHeight / 2 + shadowGraphics.fontMetrics.height).toInt()
     for (line in lines) {
         val bounds = shadowGraphics.fontMetrics.getStringBounds(line, shadowGraphics)
-
         val x = ((baseImage.width - bounds.width) / 2 + (xMid - 0.5) * baseImage.width).toInt()
-
         shadowGraphics.drawString(line, x, y)
         y += bounds.height.toInt()
     }
@@ -140,14 +143,12 @@ private fun addMultilineTextToImage(baseImage: BufferedImage, yMid: Double, xMid
     val textGraphics = stencilImage.createGraphics()
     textGraphics.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON)
     textGraphics.color = color
-    textGraphics.font = Font(fontName, Font.PLAIN, fontSize)
+    textGraphics.font = font.deriveFont(fontSize.toFloat())
 
     y = (yMid * baseImage.height - totalHeight / 2 + shadowGraphics.fontMetrics.height).toInt()
     for (line in lines) {
         val bounds = textGraphics.fontMetrics.getStringBounds(line, textGraphics)
-
         val x = ((baseImage.width - bounds.width) / 2 + (xMid - 0.5) * baseImage.width).toInt()
-
         textGraphics.drawString(line, x, y)
         y += bounds.height.toInt()
     }
@@ -156,33 +157,46 @@ private fun addMultilineTextToImage(baseImage: BufferedImage, yMid: Double, xMid
     baseImage.createGraphics().drawImage(stencilImage, 0, 0, null)
 }
 
-private fun placeSingleQuote(baseImage: BufferedImage, yMid: Double, hMax: Double, quote: String, author: String, fontName: String, color: Color) {
+private fun placeSubquote(baseImage: BufferedImage, yMid: Double, hMax: Double, quote: String, author: String, font: Font, color: Color) {
     val quoteLines = splitTextIntoLines(quote, mainTextTargetChars + (mainTextLineGrowthRate * quote.length).toInt())
     val authorLines = splitTextIntoLines(author, authorTextTargetChars + (authorTextLineGrowthRate * quote.length).toInt())
     val authorWidth = min(baseAuthorTestWidth + authorTextWidthGrowthRate * author.length, maxAuthorTextWidth)
 
-    addMultilineTextToImage(baseImage, yMid, 0.5, targetMainTextWidth, hMax, quoteLines, fontName, color)
-    addMultilineTextToImage(baseImage, yMid + hMax * authorTextVerticalOffset, targetAuthorTextPos, authorWidth, hMax * authorTextHeight, authorLines, fontName, color)
+    addMultilineTextToImage(baseImage, yMid, 0.5, targetMainTextWidth, hMax, quoteLines, font, color)
+    addMultilineTextToImage(baseImage, yMid + hMax * authorTextVerticalOffset, targetAuthorTextPos, authorWidth, hMax * authorTextHeight, authorLines, font, color)
 }
 
-private fun placeMultiQuote(baseImage: BufferedImage, hMax: Double, quotes: List<Pair<String, String>>, fontName: String, color: Color) {
-    val hMaxEach = hMax / quotes.size
+private fun placeQuote(baseImage: BufferedImage, hMax: Double, quote: Quote, font: Font, color: Color) {
+    val hMaxEach = hMax / quote.content.size
     val yMid = if (baseImage.width > baseImage.height) wideFormatCenterHeight else tallFormatCenterHeight
 
-    quotes.forEachIndexed { index, (quote, author) ->
+    quote.content.forEachIndexed { index, (quote, author) ->
         val currentYMid = yMid - hMax / 2 + hMaxEach / 2 + hMaxEach * index
-        placeSingleQuote(baseImage, currentYMid, hMaxEach * quoteTextFraction, quote, author, fontName, color)
+        placeSubquote(baseImage, currentYMid, hMaxEach * quoteTextFraction, quote, author, font, color)
     }
 }
 
-fun main() {
-    val baseImage = ImageIO.read(loadResourceFile("/Quote/Backgrounds/test.jpg")!!)
+private fun chooseFilePseudorandomly(directory: File, counter: Int, bucketSize: Int): File {
+    val files = directory.listFiles().toList().sortedBy { it.name }
+    val buckets = buildList {
+        var idx = 0
+        while (idx < files.size) {
+            add(files.subList(idx, min(files.size, idx + bucketSize)))
+            idx += bucketSize
+        }
+    }.shuffled(Random(43))
 
-    val quotes = listOf(
-        "Was ist das für ne weirde Gruppe an Menschen in dem Loch?" to "Julian übers Publikum bei den LOL Finals"
-    )
+    val choice = counter % buckets.size
 
-    placeMultiQuote(baseImage, 0.8, quotes, "Comfortaa, Bold", Color.WHITE)
+    return buckets[choice].random()
+}
 
-    ImageIO.write(baseImage, "jpg", File("./testText.png"))
+fun generateQuoteImage(quote: Quote, guildId: Long, dateSeed: Long): BufferedImage {
+    val imageFile = chooseFilePseudorandomly(backgroundsDirectory, (guildId + dateSeed).toInt(), 2)
+    val baseImage = ImageIO.read(imageFile)
+    val font = Font.createFonts(chooseFilePseudorandomly(fontsDirectory, (guildId + dateSeed).toInt(), 2)).first()
+
+    placeQuote(baseImage, 0.8, quote, font, if (imageFile.name.startsWith("light")) Color.BLACK else Color.WHITE)
+
+    return baseImage
 }
