@@ -27,3 +27,22 @@ fun abbreviateNumber(number: Long): String {
     if (absNumber >= 1000) return "${round((number/1000).toDouble())}K"
     return number.toString()
 }
+
+fun splitTextIntoLines(text: String, targetCharsPerLine: Int): List<String> {
+    val words = text.split(" ")
+
+    var currentLine = words.first()
+    val lines = mutableListOf<String>()
+
+    for (word in words.subList(1, words.size)) {
+        if (currentLine.length + word.length + 1 <= targetCharsPerLine) {
+            currentLine += " $word"
+        } else {
+            lines.add(currentLine)
+            currentLine = word
+        }
+    }
+    lines.add(currentLine)
+
+    return lines
+}
