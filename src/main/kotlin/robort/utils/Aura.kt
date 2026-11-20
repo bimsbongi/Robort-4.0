@@ -29,24 +29,24 @@ private suspend fun bookAura(booker: User, user: User, amount:Long, reason: Stri
 
     val userAura = suspendTransaction {
         Aura.upsertReturning(
-            onUpdate = { it[Aura.aura] = Aura.aura + amount },
+            onUpdate = { it[Aura.auraColumn] = Aura.auraColumn + amount },
             body = {
-                it[Aura.userId] = user.idLong
-                it[Aura.aura] = amount
+                it[Aura.userIdColumn] = user.idLong
+                it[Aura.auraColumn] = amount
             }
 
-        ).first()[Aura.aura]
+        ).first()[Aura.auraColumn]
     }
 
     if (amount != 0L) {
         suspendTransaction {
             AuraTransactions.insert {
-                it[AuraTransactions.timestamp] = System.currentTimeMillis()
-                it[AuraTransactions.userId] = user.idLong
-                it[AuraTransactions.auraAfter] = userAura
-                it[AuraTransactions.change] = amount
-                it[AuraTransactions.reason] = reason
-                it[AuraTransactions.bookerId] = booker.idLong
+                it[AuraTransactions.timestampColumn] = System.currentTimeMillis()
+                it[AuraTransactions.userIdColumn] = user.idLong
+                it[AuraTransactions.auraAfterColumn] = userAura
+                it[AuraTransactions.changeColumn] = amount
+                it[AuraTransactions.reasonColumn] = reason
+                it[AuraTransactions.bookerIdColumn] = booker.idLong
             }
         }
     }
@@ -56,7 +56,7 @@ private suspend fun bookAura(booker: User, user: User, amount:Long, reason: Stri
             append("### Aura von ${user.asMention}:\n# _${abbreviateNumber(userAura)}_\n")
 
             val transactions = suspendTransaction {
-                AuraTransactions.selectAll().where { AuraTransactions.userId eq user.idLong }.map { it[AuraTransactions.reason] to it[AuraTransactions.change] }.toList()
+                AuraTransactions.selectAll().where { AuraTransactions.userIdColumn eq user.idLong }.map { it[AuraTransactions.reasonColumn] to it[AuraTransactions.changeColumn] }.toList()
             }
 
             transactions.forEach {

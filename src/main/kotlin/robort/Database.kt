@@ -4,7 +4,6 @@ import org.jetbrains.exposed.v1.core.Table
 import org.jetbrains.exposed.v1.r2dbc.R2dbcDatabase
 import org.jetbrains.exposed.v1.r2dbc.SchemaUtils
 import org.jetbrains.exposed.v1.r2dbc.transactions.suspendTransaction
-import robort.Aura.userId
 import robort.menu.ChannelType
 import robort.quiz.QuizType
 import robort.utils.envOrDefault
@@ -40,61 +39,58 @@ suspend fun setupDatabase() {
 }
 
 object QuizAnswers : Table("quiz_answers") {
-    val userId = long("user_id")
-    val questionId = integer("question_id")
-    val answerId = integer("answer_id")
-    val type = enumerationByName<QuizType>("quiz_type", 64)
+    val userIdColumn = long("user_id")
+    val questionIdColumn = integer("question_id")
+    val answerIdColumn = integer("answer_id")
+    val typeColumn = enumerationByName<QuizType>("quiz_type", 64)
 
-    override val primaryKey = PrimaryKey(userId, questionId, type)
+    override val primaryKey = PrimaryKey(userIdColumn, questionIdColumn, typeColumn)
 }
 
 object Money : Table("money") {
-    val userId = long("user_id")
-    val money = long("money")
+    val userIdColumn = long("user_id")
+    val moneyColumn = long("money")
 
-    override val primaryKey = PrimaryKey(userId)
+    override val primaryKey = PrimaryKey(userIdColumn)
 }
 
 object Aura : Table("aura") {
-    val userId = long("user_id")
-    val aura = long("aura")
+    val userIdColumn = long("user_id")
+    val auraColumn = long("aura")
 
-    override val primaryKey = PrimaryKey(userId)
+    override val primaryKey = PrimaryKey(userIdColumn)
 }
 
 object AuraTransactions : Table("aura_transactions") {
-    val timestamp = long("timestamp")
-    val userId = long("user_id")
-    val bookerId = long("booker")
-    val change = long("change")
-    val auraAfter = long("aura_after")
-    val reason = text("reason")
+    val timestampColumn = long("timestamp")
+    val userIdColumn = long("user_id")
+    val bookerIdColumn = long("booker")
+    val changeColumn = long("change")
+    val auraAfterColumn = long("aura_after")
+    val reasonColumn = text("reason")
 }
 
 
 object GuildChannelSettings: Table("channel_settings") {
-    val guildId = long("guild_id")
-    val channelId = long("channel_id").nullable()
-    val channelType = enumerationByName<ChannelType>("channel_type", 64)
+    val guildIdColumn = long("guild_id")
+    val channelIdColumn = long("channel_id").nullable()
+    val channelTypeColumn = enumerationByName<ChannelType>("channel_type", 64)
 
-    override val primaryKey = PrimaryKey(guildId, channelType)
+    override val primaryKey = PrimaryKey(guildIdColumn, channelTypeColumn)
 }
 
 object QuoteMessages: Table("quote_messages") {
-    val messageId = long("message_id")
-    val channelId = long("channel_id")
-    val guildId = long("guild_id")
-    val timestamp = long("timestamp")
-    val cachedContent = text("cached_content")
+    val messageIdColumn = long("message_id")
+    val channelIdColumn = long("channel_id")
+    val guildIdColumn = long("guild_id")
+    val timestampColumn = long("timestamp")
+    val cachedContentColumn = text("cached_content")
 
-    override val primaryKey = PrimaryKey(messageId)
+    override val primaryKey = PrimaryKey(messageIdColumn)
 }
 
 object ChosenDailyQuotes: Table("chosen_daily_quotes") {
-    val messageId = long("message_id")
-    val channelId = long("channel_id")
-    val guildId = long("guild_id")
-    val timestamp = long("timestamp")
-
-    override val primaryKey = PrimaryKey(QuoteMessages.messageId)
+    val messageIdColumn = long("message_id")
+    val guildIdColumn = long("guild_id")
+    val timestampColumn = long("timestamp")
 }

@@ -23,7 +23,6 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
 import net.dv8tion.jda.api.components.container.Container
-import net.dv8tion.jda.api.components.selections.EntitySelectMenu
 import net.dv8tion.jda.api.components.selections.StringSelectMenu
 import net.dv8tion.jda.api.components.textinput.TextInputStyle
 import net.dv8tion.jda.api.entities.Message
@@ -81,13 +80,13 @@ private suspend fun getCurrentPrice(ticker: String): Double {
 private suspend fun placeBet(user: User, amount: Long, ticker: String, direction: String): Pair<Container, Double> {
     val money = suspendTransaction {
         Money.upsertReturning(
-            onUpdate = { it[Money.money] = Money.money + (-amount) },
+            onUpdate = { it[Money.moneyColumn] = Money.moneyColumn + (-amount) },
             body = {
-                it[Money.userId] = user.idLong
-                it[Money.money] = startCapital - amount
+                it[Money.userIdColumn] = user.idLong
+                it[Money.moneyColumn] = startCapital - amount
             }
 
-        ).first()[Money.money]
+        ).first()[Money.moneyColumn]
     }
 
     val betEvaluation = getCurrentPrice(ticker)
@@ -113,10 +112,10 @@ suspend fun resolveBet(betMessage: Message, user: User, betEvaluation: Double, a
     if (betEvaluation != newEvaluation && ((betEvaluation > newEvaluation) == (direction == "steigend"))) {
         suspendTransaction {
             Money.upsert(
-                onUpdate = { it[Money.money] = Money.money + 2 * amount },
+                onUpdate = { it[Money.moneyColumn] = Money.moneyColumn + 2 * amount },
                 body = {
-                    it[Money.userId] = user.idLong
-                    it[Money.money] = startCapital + 2 * amount
+                    it[Money.userIdColumn] = user.idLong
+                    it[Money.moneyColumn] = startCapital + 2 * amount
                 }
             )
         }
@@ -130,7 +129,7 @@ suspend fun resolveBet(betMessage: Message, user: User, betEvaluation: Double, a
 
 private suspend fun infoContainer(user: User): Container {
     val userMoney = suspendTransaction {
-        Money.selectAll().where { Money.userId eq user.idLong }.map { it[Money.money] }.firstOrNull()?: startCapital
+        Money.selectAll().where { Money.userIdColumn eq user.idLong }.map { it[Money.moneyColumn] }.firstOrNull()?: startCapital
     }
 
     return Container {

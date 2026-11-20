@@ -208,11 +208,11 @@ class Quiz (
         val memberIds = guild.loadMembers().await().map { it.idLong }
 
         return@suspendTransaction QuizAnswers.selectAll()
-            .where { QuizAnswers.userId.inList(memberIds) and (QuizAnswers.type eq type) }
-            .groupBy { it[QuizAnswers.userId] }
+            .where { QuizAnswers.userIdColumn.inList(memberIds) and (QuizAnswers.typeColumn eq type) }
+            .groupBy { it[QuizAnswers.userIdColumn] }
             .toList().associate { (userId, answers) ->
                 val answerMap = buildMap {
-                    answers.forEach { put(it[QuizAnswers.questionId], it[QuizAnswers.answerId]) }
+                    answers.forEach { put(it[QuizAnswers.questionIdColumn], it[QuizAnswers.answerIdColumn]) }
                 }
                 userId to UserQuizAnswer(answerMap)
             }.toMutableMap()
@@ -220,10 +220,10 @@ class Quiz (
 
     private suspend fun saveQuizAnswers() = suspendTransaction {
         QuizAnswers.batchUpsert(answers.entries) {
-            this[QuizAnswers.type] = quizType
-            this[QuizAnswers.userId] = player.idLong
-            this[QuizAnswers.questionId] = it.key
-            this[QuizAnswers.answerId] = it.value
+            this[QuizAnswers.typeColumn] = quizType
+            this[QuizAnswers.userIdColumn] = player.idLong
+            this[QuizAnswers.questionIdColumn] = it.key
+            this[QuizAnswers.answerIdColumn] = it.value
         }
     }
 

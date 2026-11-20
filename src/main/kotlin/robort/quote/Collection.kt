@@ -27,8 +27,8 @@ private suspend fun scrapeQuoteMessages(quoteChannel: GuildMessageChannel) {
     val latestMessageId = quoteChannel.latestMessageIdLong
 
     val lastKnownMessageId = suspendTransaction {
-        val max = QuoteMessages.messageId.max()
-        QuoteMessages.select(max).where { QuoteMessages.channelId eq quoteChannel.idLong }.firstOrNull()?.get(max)
+        val max = QuoteMessages.messageIdColumn.max()
+        QuoteMessages.select(max).where { QuoteMessages.channelIdColumn eq quoteChannel.idLong }.firstOrNull()?.get(max)
     }
     if (lastKnownMessageId == latestMessageId) return
 
@@ -38,11 +38,11 @@ private suspend fun scrapeQuoteMessages(quoteChannel: GuildMessageChannel) {
 
     suspendTransaction {
         QuoteMessages.batchInsert(fetchedMessages, ignore = true) {
-            this[QuoteMessages.messageId] = it.idLong
-            this[QuoteMessages.timestamp] = it.timeCreated.toEpochSecond()
-            this[QuoteMessages.channelId] = quoteChannel.idLong
-            this[QuoteMessages.guildId] = quoteChannel.guild.idLong
-            this[QuoteMessages.cachedContent] = it.contentRaw
+            this[QuoteMessages.messageIdColumn] = it.idLong
+            this[QuoteMessages.timestampColumn] = it.timeCreated.toEpochSecond()
+            this[QuoteMessages.channelIdColumn] = quoteChannel.idLong
+            this[QuoteMessages.guildIdColumn] = quoteChannel.guild.idLong
+            this[QuoteMessages.cachedContentColumn] = it.contentRaw
         }
     }
 }
@@ -70,5 +70,3 @@ suspend fun backgroundQuoteDownloader() {
 data class Quote(
     val content: List<Pair<String, String>>
 )
-
-private fun extractQuote()

@@ -1,6 +1,6 @@
 package robort.quote
 
-import net.dv8tion.jda.api.entities.Message
+import robort.mainLogger
 import robort.utils.loadResourceFile
 import robort.utils.splitTextIntoLines
 import java.awt.Color
@@ -92,10 +92,10 @@ private fun makeImageTranslucent(image: BufferedImage, factor: Double) {
         val blue = pixels[i] and 0xff
 
         alpha = (alpha * factor).toInt()
-        resultPixels[i] = (alpha shl 24) or (red shl 16) or (green shl 8) or blue;
+        resultPixels[i] = (alpha shl 24) or (red shl 16) or (green shl 8) or blue
     }
 
-    image.setRGB(0, 0, width, height, resultPixels, 0, width);
+    image.setRGB(0, 0, width, height, resultPixels, 0, width)
 }
 
 private fun findFontSize(targetWidth: Int, maxHeight: Int, g2d: Graphics2D, font: Font, text: String): Int {
@@ -167,6 +167,7 @@ private fun placeSubquote(baseImage: BufferedImage, yMid: Double, hMax: Double, 
 }
 
 private fun placeQuote(baseImage: BufferedImage, hMax: Double, quote: Quote, font: Font, color: Color) {
+    mainLogger.info("Generating quote image")
     val hMaxEach = hMax / quote.content.size
     val yMid = if (baseImage.width > baseImage.height) wideFormatCenterHeight else tallFormatCenterHeight
 
@@ -174,6 +175,7 @@ private fun placeQuote(baseImage: BufferedImage, hMax: Double, quote: Quote, fon
         val currentYMid = yMid - hMax / 2 + hMaxEach / 2 + hMaxEach * index
         placeSubquote(baseImage, currentYMid, hMaxEach * quoteTextFraction, quote, author, font, color)
     }
+    mainLogger.info("Finished generating quote image")
 }
 
 private fun chooseFilePseudorandomly(directory: File, counter: Int, bucketSize: Int): File {

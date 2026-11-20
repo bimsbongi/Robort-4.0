@@ -3,10 +3,7 @@ package robort.menu
 import dev.minn.jda.ktx.generics.getChannel
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.toSet
-import net.dv8tion.jda.api.entities.channel.concrete.TextChannel
-import net.dv8tion.jda.api.entities.channel.middleman.GuildChannel
 import net.dv8tion.jda.api.entities.channel.middleman.GuildMessageChannel
-import net.dv8tion.jda.api.entities.channel.middleman.MessageChannel
 import org.jetbrains.exposed.v1.core.and
 import org.jetbrains.exposed.v1.core.eq
 import org.jetbrains.exposed.v1.r2dbc.selectAll
@@ -28,8 +25,8 @@ suspend fun getGuildSetChannel(guildId: Long, channelType: ChannelType) =
     cachedChannelSettings.getOrPut(guildId to channelType) {
         suspendTransaction {
             GuildChannelSettings.selectAll()
-                .where { (GuildChannelSettings.guildId eq guildId) and (GuildChannelSettings.channelType eq channelType) }
-                .firstOrNull()?.get(GuildChannelSettings.channelId)
+                .where { (GuildChannelSettings.guildIdColumn eq guildId) and (GuildChannelSettings.channelTypeColumn eq channelType) }
+                .firstOrNull()?.get(GuildChannelSettings.channelIdColumn)
         }
     }?.let { jda.getChannel<GuildMessageChannel>(it) }
 
@@ -38,22 +35,22 @@ suspend fun saveGuildSetChannel(guildId: Long, channelType: ChannelType, channel
     cachedChannelSettings[guildId to channelType] = channelId
 
     GuildChannelSettings.upsert {
-        it[GuildChannelSettings.guildId] = guildId
-        it[GuildChannelSettings.channelType] = channelType
-        it[GuildChannelSettings.channelId] = channelId
+        it[GuildChannelSettings.guildIdColumn] = guildId
+        it[GuildChannelSettings.channelTypeColumn] = channelType
+        it[GuildChannelSettings.channelIdColumn] = channelId
     }
 }
 
 suspend fun getAllSetChannels(channelType: ChannelType): List<GuildMessageChannel> {
     val databaseResult = suspendTransaction {
         GuildChannelSettings.selectAll()
-            .where { GuildChannelSettings.channelType eq channelType }
+            .where { GuildChannelSettings.channelTypeColumn eq channelType }
             .toSet()
     }
 
    return databaseResult.mapNotNull { resultRow ->
-        cachedChannelSettings.getOrPut(resultRow[GuildChannelSettings.guildId] to channelType) {
-            resultRow[GuildChannelSettings.channelId]
+        cachedChannelSettings.getOrPut(resultRow[GuildChannelSettings.guildIdColumn] to channelType) {
+            resultRow[GuildChannelSettings.channelIdColumn]
         }?.let { jda.getChannel<GuildMessageChannel>(it) }
    }
 }

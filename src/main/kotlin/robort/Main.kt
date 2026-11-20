@@ -5,6 +5,7 @@ import dev.minn.jda.ktx.events.CoroutineEventManager
 import dev.minn.jda.ktx.events.listener
 import dev.minn.jda.ktx.jdabuilder.default
 import dev.minn.jda.ktx.jdabuilder.intents
+import dev.minn.jda.ktx.messages.send
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.asCoroutineDispatcher
 import net.dv8tion.jda.api.events.interaction.ModalInteractionEvent
@@ -38,6 +39,8 @@ import robort.menu.processMainMenuSelect
 import robort.menu.setMenuCommand
 import robort.poll.listenForPollInfoButtonClick
 import robort.quote.launchBackgroundQuoteDownloader
+import robort.quote.quoteGuessrCommand
+import robort.quote.sendOutDailyQuotes
 import robort.utils.envOrDefault
 import robort.utils.onSlashCommand
 import robort.utils.showProfileColorCommand
@@ -56,6 +59,8 @@ suspend fun main() {
     registerListeners()
     registerDatabase()
     launchBackgroundQuoteDownloader()
+
+    sendOutDailyQuotes()
 }
 
 suspend fun registerCommands() {
@@ -65,6 +70,11 @@ suspend fun registerCommands() {
     registerCommandAction.addCommands(Commands.slash("panda", "Halt nen Panda"))
     jda.onSlashCommand("panda") {
         animatePanda(it)
+    }
+
+    registerCommandAction.addCommands(Commands.slash("quote-guessr", "Errate wer das mal wieder gesagt hat"))
+    jda.onSlashCommand("quote-guessr") {
+        quoteGuessrCommand(it)
     }
 
     registerCommandAction.addCommands(Commands.slash("profile-color", "Die Farbe des default-Profilbilds eines Users abfragen")
@@ -211,6 +221,10 @@ private fun registerListeners() {
                 if (messageId != reference.idLong) return@forEach
                 activity.processMessageReply(event)
             }
+
+        if (event.message.mentions.users.map { it.idLong }.contains(jda.selfUser.idLong) && event.message.author.idLong != jda.selfUser.idLong) {
+            event.message.channel.send(":robot: Beep boop!").setMessageReference(event.message.idLong).await()
+        }
     }
 
     mainLogger.info("Registered all listeners")
